@@ -41,6 +41,16 @@
     .highlight-layer { z-index: 1; background-color: #ffffff; pointer-events: none; overflow: hidden; }
     .highlight-layer code { font: inherit; display: block; }
 
+    /* ===== עמודת תיבות הסימון (checkbox) לצד קוד ה-CSS ===== */
+    #wrapper-css textarea.code-editor, #wrapper-css .highlight-layer { left: 52px; width: calc(100% - 52px); }
+    .gutter { position: absolute; top: 0; left: 0; bottom: 0; width: 52px; background: #f1f5f9; border-right: 3px solid #cbd5e1; overflow: hidden; z-index: 3; }
+    .gutter-inner { position: absolute; top: 0; left: 0; right: 0; }
+    .g-row { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .g-row input { width: 22px; height: 22px; cursor: pointer; accent-color: #16a34a; }
+    .g-row:hover { background: #dbeafe; }
+    .off { background: rgba(220, 38, 38, 0.12); opacity: 0.5; text-decoration: line-through; text-decoration-color: #dc2626; }
+    #enable-all { display: none; background: #16a34a; border-color: #16a34a; color: white; }
+
     /* ===== צבעי Visual Studio Code (ערכת Light+) ===== */
     .c  { color: #008000; }               /* הערות - ירוק */
     .tg { color: #800000; }               /* תגיות HTML, סלקטורים ב-CSS - בורדו */
@@ -95,6 +105,7 @@
         <div class="tab-group">
           <button class="tab-btn active" id="tab-html" onclick="switchTab('html')">HTML</button>
           <button class="tab-btn" id="tab-css" onclick="switchTab('css')">CSS</button>
+          <button class="tab-btn" id="enable-all" onclick="enableAllLines()" title="החזרת כל השורות שכובו">☑ הפעל הכל</button>
         </div>
       </div>
       <div class="editor-wrapper">
@@ -103,6 +114,7 @@
           <pre class="highlight-layer"><code id="code-html"></code></pre>
         </div>
         <div id="wrapper-css" style="position: absolute; width:100%; height:100%; display: none;">
+          <div class="gutter" id="css-gutter" title="סמן/בטל כדי להפעיל או לכבות שורה"><div class="gutter-inner" id="gutter-inner"></div></div>
           <textarea id="editor-css" class="code-editor" spellcheck="false" oninput="handleInput('css')" onscroll="handleScroll('css')"></textarea>
           <pre class="highlight-layer"><code id="code-css"></code></pre>
         </div>
@@ -671,7 +683,7 @@ body {                                  /* בוחר את כל גוף הדף */
 
     /* ================= צביעת קוד בסגנון VS Code (ללא ספריות חיצוניות) ================= */
     const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const span = (cls, t) => `<span class="${cls}">${esc(t)}</span>`;
+    const span = (cls, t) => t.split('\n').map(x => x ? `<span class="${cls}">${esc(x)}</span>` : '').join('\n');
 
     // עוברת על כל ההתאמות של ביטוי רגולרי, ומחליפה כל התאמה בתוצאת fn
     function run(text, re, fn) {
@@ -760,6 +772,9 @@ body {                                  /* בוחר את כל גוף הדף */
       const topic = defaultTopics[key] || defaultTopics.animals;
       document.getElementById('editor-html').value = topic.html;
       document.getElementById('editor-css').value = topic.css;
+      disabledLines.clear();
+      prevCssLines = document.getElementById('editor-css').value.split('\n').length;
+      renderGutter();
       triggerHighlight('html'); triggerHighlight('css'); updatePreview();
     }
 
@@ -769,16 +784,82 @@ body {                                  /* בוחר את כל גוף הדף */
       document.getElementById('tab-css').classList.toggle('active', tab === 'css');
       document.getElementById('wrapper-html').style.display = tab === 'html' ? 'block' : 'none';
       document.getElementById('wrapper-css').style.display = tab === 'css' ? 'block' : 'none';
+      document.getElementById('enable-all').style.display = tab === 'css' ? 'inline-block' : 'none';
+      if (tab === 'css') renderGutter();
     }
 
-    function handleInput(type) { triggerHighlight(type); updatePreview(); }
+    /* ===== הפעלה/כיבוי של שורות CSS ===== */
+    let disabledLines = new Set();   // מספרי השורות (מ-0) שכובו
+    let prevCssLines = 0;
+
+    // מחזירה לכל שורה: האם זו שורת מאפיין (property: value) בתוך בלוק { }
+    function declLines(text) {
+      const clean = text.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, m => m.replace(/[^\n]/g, ' '));
+      let depth = 0;
+      return clean.split('\n').map(ln => {
+        const isDecl = depth > 0 && /^[-a-zA-Z]+\s*:\s*[^{};]+;?$/.test(ln.trim());
+        for (const ch of ln) { if (ch === '{') depth++; else if (ch === '}') depth = Math.max(0, depth - 1); }
+        return isDecl;
+      });
+    }
+
+    function renderGutter() {
+      const ta = document.getElementById('editor-css');
+      const lh = currentFontSize * 1.6;
+      const flags = declLines(ta.value);
+      disabledLines = new Set([...disabledLines].filter(i => flags[i]));
+      let h = '';
+      flags.forEach((f, i) => {
+        if (f) h += `<label class="g-row" style="top:${20 + i * lh}px;height:${lh}px"><input type="checkbox" data-line="${i}" ${disabledLines.has(i) ? '' : 'checked'}></label>`;
+      });
+      const inner = document.getElementById('gutter-inner');
+      inner.innerHTML = h;
+      inner.style.transform = `translateY(${-ta.scrollTop}px)`;
+    }
+
+    document.addEventListener('change', e => {
+      if (e.target.dataset && e.target.dataset.line !== undefined) {
+        const i = +e.target.dataset.line;
+        if (e.target.checked) disabledLines.delete(i); else disabledLines.add(i);
+        triggerHighlight('css'); updatePreview();
+      }
+    });
+
+    function enableAllLines() { disabledLines.clear(); renderGutter(); triggerHighlight('css'); updatePreview(); }
+
+    // כשמוסיפים/מוחקים שורות בעורך, מזיזים את מספרי השורות הכבויות בהתאם
+    function shiftDisabled() {
+      const ta = document.getElementById('editor-css');
+      const n = ta.value.split('\n').length, delta = n - prevCssLines;
+      if (delta !== 0) {
+        const c = ta.value.slice(0, ta.selectionStart).split('\n').length - 1;
+        const next = new Set();
+        disabledLines.forEach(i => {
+          if (i > c - delta) next.add(i + delta);
+          else if (delta < 0 && i > c) { /* השורה נמחקה */ }
+          else next.add(i);
+        });
+        disabledLines = next;
+      }
+      prevCssLines = n;
+    }
+
+    function cssForPreview() {
+      return document.getElementById('editor-css').value.split('\n').filter((_, i) => !disabledLines.has(i)).join('\n');
+    }
+
+    function handleInput(type) {
+      if (type === 'css') { shiftDisabled(); renderGutter(); }
+      triggerHighlight(type); updatePreview();
+    }
 
     function triggerHighlight(t) {
       const textarea = document.getElementById(`editor-${t}`);
       const codeBlock = document.getElementById(`code-${t}`);
       let text = textarea.value;
       if (text.endsWith("\n")) { text += " "; }
-      codeBlock.innerHTML = t === 'html' ? highlightHTML(text) : highlightCSS(text);
+      if (t === 'html') codeBlock.innerHTML = highlightHTML(text);
+      else codeBlock.innerHTML = highlightCSS(text).split('\n').map((l, i) => disabledLines.has(i) ? `<span class="off">${l}</span>` : l).join('\n');
       handleScroll(t);
     }
 
@@ -787,6 +868,7 @@ body {                                  /* בוחר את כל גוף הדף */
       const highlightLayer = textarea.nextElementSibling;
       highlightLayer.scrollTop = textarea.scrollTop;
       highlightLayer.scrollLeft = textarea.scrollLeft;
+      if (type === 'css') document.getElementById('gutter-inner').style.transform = `translateY(${-textarea.scrollTop}px)`;
     }
 
     function buildPage(h, c) {
@@ -795,7 +877,7 @@ body {                                  /* בוחר את כל גוף הדף */
 
     function updatePreview() {
       const html = document.getElementById('editor-html').value;
-      const css = document.getElementById('editor-css').value;
+      const css = cssForPreview();
       document.getElementById('preview-output').srcdoc = buildPage(html, css);
     }
 
@@ -804,6 +886,7 @@ body {                                  /* בוחר את כל גוף הדף */
       document.querySelectorAll('.code-editor, .highlight-layer').forEach(el => {
         el.style.fontSize = currentFontSize + 'px';
       });
+      renderGutter();
     }
 
     function resetCurrentCode() { onTopicChange(document.getElementById('topic-select').value); }
@@ -817,7 +900,7 @@ body {                                  /* בוחר את כל גוף הדף */
 
     function saveToFile() {
       const h = document.getElementById('editor-html').value;
-      const c = document.getElementById('editor-css').value;
+      const c = cssForPreview();
       const blob = new Blob([buildPage(h, c)], { type: 'text/html' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
