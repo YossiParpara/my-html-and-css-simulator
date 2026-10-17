@@ -2,195 +2,92 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>מעבדת קוד HTML & CSS - כלי להדגמה בכיתה</title>
   <style>
     :root {
-      --bg-primary: #f8fafc;
-      --bg-surface: #ffffff;
-      --border-color: #cbd5e1;
-      --text-main: #0f172a;
-      --accent: #2563eb;
-      --code-bg: #ffffff;
-      --editor-font-size: 15px;
+      --bg-primary: #cbd5e1; --bg-surface: #f8fafc; --border-color: #475569;
+      --text-main: #0f172a; --accent: #1d4ed8; --editor-font-size: 18px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    header {
-      background-color: var(--bg-surface);
-      border-bottom: 2px solid var(--border-color);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .title-area h1 { font-size: 1.1rem; color: var(--accent); }
-
-    .topic-selector-area {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .topic-selector-area label {
-      font-weight: bold;
-      font-size: 0.9rem;
-      color: var(--text-main);
-    }
-
-    #topic-select {
-      background-color: #f1f5f9;
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    #topic-select:hover { background-color: #e2e8f0; }
-
-    .controls { display: flex; gap: 6px; flex-wrap: wrap; }
-
-    .btn-control {
-      background-color: #ffffff;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .btn-control:hover { background-color: #f1f5f9; }
-    .btn-save { background-color: #16a34a; color: white; border-color: #16a34a; }
+    body { font-family: system-ui, sans-serif; background-color: var(--bg-primary); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    header { background-color: var(--bg-surface); border-bottom: 4px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .title-area h1 { font-size: 1.5rem; color: var(--accent); font-weight: 800; }
+    .topic-selector-area { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 550px; }
+    .topic-selector-area label { font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
+    #topic-select { width: 100%; background-color: #ffffff; border: 3px solid var(--accent); padding: 10px 16px; border-radius: 8px; font-weight: 800; font-size: 1.05rem; }
+    .controls { display: flex; gap: 8px; }
+    .btn-control { background-color: #ffffff; border: 2px solid var(--border-color); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 800; }
+    .btn-control:hover { background-color: #e2e8f0; }
+    .btn-save { background-color: #16a34a; border-color: #16a34a; color: white; }
     .btn-save:hover { background-color: #15803d; }
 
-    main {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      flex: 1;
-      height: calc(100vh - 65px);
-      background-color: var(--border-color);
-      gap: 2px;
-    }
-
-    .pane-code {
-      background-color: var(--bg-surface);
-      display: flex;
-      flex-direction: column;
-      direction: ltr;
-    }
-
-    .pane-header {
-      background-color: #f1f5f9;
-      padding: 8px 15px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      direction: rtl;
-    }
-
-    .tab-group { display: flex; gap: 5px; direction: ltr; }
-
-    .tab-btn {
-      padding: 4px 12px;
-      border: 1px solid var(--border-color);
-      background: #e2e8f0;
-      cursor: pointer;
-      font-weight: bold;
-      border-radius: 4px;
-    }
-
+    main { display: grid; grid-template-columns: 1fr 1fr; flex: 1; min-height: 0; background-color: var(--border-color); gap: 5px; direction: ltr; }
+    .pane-code, .pane-preview { background-color: #ffffff; display: flex; flex-direction: column; min-height: 0; }
+    .pane-header { background-color: #e2e8f0; padding: 12px 20px; font-weight: 800; font-size: 1.1rem; border-bottom: 3px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; direction: rtl; }
+    .tab-group { display: flex; gap: 6px; direction: ltr; }
+    .tab-btn { padding: 6px 18px; border: 2px solid var(--border-color); background: #ffffff; cursor: pointer; font-weight: 800; border-radius: 6px; }
     .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-    .editor-wrapper { position: relative; flex: 1; width: 100%; height: 100%; }
-
-    textarea.code-editor {
-      width: 100%;
-      height: 100%;
-      border: none;
-      padding: 15px;
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: var(--editor-font-size);
-      line-height: 1.5;
-      background-color: var(--code-bg);
-      color: #0f172a;
-      resize: none;
-      outline: none;
-      direction: ltr;
-      white-space: pre;
-      tab-size: 2;
+    .editor-wrapper { position: relative; flex: 1; background: #ffffff; overflow: hidden; }
+    textarea.code-editor, .highlight-layer {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; padding: 20px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: var(--editor-font-size);
+      line-height: 1.6; white-space: pre; tab-size: 2; box-sizing: border-box; font-weight: 600;
+      border: none; letter-spacing: 0; direction: ltr; text-align: left;
     }
+    textarea.code-editor { background: transparent; color: transparent; caret-color: #000000; resize: none; outline: none; z-index: 2; overflow: auto; }
+    textarea.code-editor::selection { background: rgba(29, 78, 216, 0.25); }
+    .highlight-layer { z-index: 1; background-color: #ffffff; pointer-events: none; overflow: hidden; }
+    .highlight-layer code { font: inherit; display: block; }
 
-    .pane-preview { background-color: #ffffff; display: flex; flex-direction: column; }
-    iframe#preview-output { width: 100%; height: 100%; border: none; background-color: #ffffff; }
+    /* ===== צבעי Visual Studio Code (ערכת Light+) ===== */
+    .c  { color: #008000; }               /* הערות - ירוק */
+    .tg { color: #800000; }               /* תגיות HTML, סלקטורים ב-CSS - בורדו */
+    .at { color: #e50000; }               /* שמות מאפיינים (HTML attributes / CSS properties) - אדום */
+    .av { color: #0000ff; }               /* ערכי מאפיינים ב-HTML - כחול */
+    .kw { color: #0451a5; }               /* ערכי מילים ב-CSS (flex, solid...) - כחול כהה */
+    .nm { color: #098658; }               /* מספרים, יחידות וצבעי hex - ירוק כהה */
+    .fn { color: #795e26; }               /* פונקציות (rgba, scale...) - חום */
+    .st { color: #a31515; }               /* מחרוזות - אדום כהה */
+    .ar { color: #af00db; }               /* @-rules ו-!important - סגול */
 
+    iframe#preview-output { width: 100%; flex: 1; border: none; background-color: #ffffff; }
+    .fullscreen-preview .pane-header { font-size: 1.2rem; }
     .fullscreen-preview { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; }
   </style>
 </head>
 <body>
-
   <header>
-    <div class="title-area">
-      <h1>🎓 מעבדת קוד HTML & CSS</h1>
-    </div>
-
+    <div class="title-area"><h1>🎓 מעבדת קוד HTML & CSS</h1></div>
     <div class="topic-selector-area">
-      <label for="topic-select">בחר נושא שיעור:</label>
+      <label for="topic-select">בחר נושא:</label>
       <select id="topic-select" onchange="onTopicChange(this.value)">
         <optgroup label="📂 יסודות ומבנה עיצוב">
           <option value="animals">1. דף חיות & Box Model</option>
           <option value="imageText">2. 🖼️ שילוב תמונה וטקסט (Flexbox)</option>
           <option value="flexbox">3. Flexbox Layout</option>
         </optgroup>
-
         <optgroup label="✨ אפקטים, מעברים וגלריות תמונות">
-          <option value="interactiveHover">4. 🖱️ מעבדה אינטראקטיבית: הדלק/כבה CSS עם Checkbox</option>
-          <option value="hoverDemo">5. אפקט Hover פשוט (עם הסברים)</option>
-          <option value="threeCards">6. 🌟 גלריית 3 כרטיסיות (עם תמונות ורקע רך)</option>
-          <option value="flipCard">7. Flip Card (אפקט 3D)</option>
-          <option value="page2">8. Hover Gallery (אפקטי מעבר על תמונות)</option>
+          <option value="hoverDemo">4. 🖱️ אפקט Hover פשוט (כפתור)</option>
+          <option value="threeCards">5. 🌟 גלריית 3 כרטיסיות</option>
+          <option value="flipCard">6. Flip Card (אפקט 3D)</option>
+          <option value="page2">7. Hover Gallery (אפקטי מעבר על תמונות)</option>
         </optgroup>
-
         <optgroup label="🌀 אנימציות וגרדיאנטים">
-          <option value="page3">9. Infinite Animations (הקפצה והבהוב)</option>
-          <option value="page4">10. Animated Gradient Background</option>
-          <option value="page6">11. Parallax Hero Section</option>
+          <option value="page3">8. Infinite Animations (הקפצה והבהוב)</option>
+          <option value="page4">9. Animated Gradient Background</option>
+          <option value="page6">10. Parallax Hero Section</option>
         </optgroup>
       </select>
     </div>
-
     <div class="controls">
       <button class="btn-control btn-save" onclick="saveToFile()">💾 הורד קובץ</button>
-      <button class="btn-control" onclick="adjustFontSize(1)">🔍 +פונט</button>
-      <button class="btn-control" onclick="adjustFontSize(-1)">🔍 -פונט</button>
+      <button class="btn-control" onclick="adjustFontSize(2)">🔍 +פונט</button>
+      <button class="btn-control" onclick="adjustFontSize(-2)">🔍 -פונט</button>
       <button class="btn-control" onclick="resetCurrentCode()">🔄 איפוס</button>
-      <button class="btn-control" onclick="toggleFullscreen()">🖥️ מסך מלא</button>
     </div>
   </header>
-
   <main id="main-container">
     <section class="pane-code">
       <div class="pane-header">
@@ -200,176 +97,743 @@
           <button class="tab-btn" id="tab-css" onclick="switchTab('css')">CSS</button>
         </div>
       </div>
-      
       <div class="editor-wrapper">
-        <textarea id="editor-html" class="code-editor" spellcheck="false" oninput="handleCodeInput()"></textarea>
-        <textarea id="editor-css" class="code-editor" spellcheck="false" oninput="handleCodeInput()" style="display: none;"></textarea>
+        <div id="wrapper-html" style="position: absolute; width:100%; height:100%;">
+          <textarea id="editor-html" class="code-editor" spellcheck="false" oninput="handleInput('html')" onscroll="handleScroll('html')"></textarea>
+          <pre class="highlight-layer"><code id="code-html"></code></pre>
+        </div>
+        <div id="wrapper-css" style="position: absolute; width:100%; height:100%; display: none;">
+          <textarea id="editor-css" class="code-editor" spellcheck="false" oninput="handleInput('css')" onscroll="handleScroll('css')"></textarea>
+          <pre class="highlight-layer"><code id="code-css"></code></pre>
+        </div>
       </div>
     </section>
-
     <section class="pane-preview" id="preview-panel">
       <div class="pane-header">
         <span>תוצאה חיה (Preview)</span>
+        <button class="btn-control" id="fs-btn" onclick="toggleFullscreen()">🖥️ מסך מלא</button>
       </div>
       <iframe id="preview-output"></iframe>
     </section>
   </main>
 
   <script>
+    /* ================= דוגמאות (כל שורת CSS מוסברת בהערה) ================= */
     const defaultTopics = {
       animals: {
-        html: `<h1>עולם החיות המופלא</h1>\n<hr>\n\n<p>ניווט מהיר: <a href="#lion">אריה</a> | <a href="#elephant">פיל</a></p>\n\n<div class="card">\n  <h2 id="lion">1. אריה (מלך החיות)</h2>\n  <p>האריה הוא יונק טורף ממשפחת החתוליים.</p>\n  <ul>\n    <li>משקל: 150-250 ק"ג</li>\n    <li>מזון: בשר</li>\n  </ul>\n</div>\n\n<br>\n\n<div class="card">\n  <h2 id="elephant">2. פיל אפריקאי</h2>\n  <p>הפיל הוא היונק היבשתי הגדול ביותר.</p>\n  <ul>\n    <li>תכונה ייחודית: חדק ארוך</li>\n  </ul>\n</div>`,
-        css: `/* עיצוב גוף הדף */\nbody {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 20px;\n}\n\nh1 {\n  color: #1e3a8a;\n  text-align: center;\n}\n\na {\n  color: #2563eb;\n  font-weight: bold;\n  text-decoration: none;\n}\n\n.card {\n  background: linear-gradient(135deg, #ffffff, #f1f5f9);\n  border: 1px solid #cbd5e1;\n  border-radius: 12px;\n  padding: 20px;\n  margin-top: 15px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);\n}\n\n.card h2 {\n  color: #1e3a8a;\n  margin-bottom: 8px;\n}\n\n.card p {\n  color: #334155;\n  line-height: 1.5;\n}\n\n.card ul {\n  margin-top: 8px;\n  margin-right: 20px;\n  color: #475569;\n}`
+        html: `<h1>עולם החיות המופלא</h1>
+<hr>
+
+<p>ניווט מהיר: <a href="#lion">אריה</a> | <a href="#elephant">פיל</a></p>
+
+<div class="card">
+  <h2 id="lion">1. אריה (מלך החיות)</h2>
+  <p>האריה הוא יונק טורף ממשפחת החתוליים.</p>
+  <ul>
+    <li>משקל: 150-250 ק"ג</li>
+    <li>מזון: בשר</li>
+  </ul>
+</div>
+
+<br>
+
+<div class="card">
+  <h2 id="elephant">2. פיל אפריקאי</h2>
+  <p>הפיל הוא היונק היבשתי הגדול ביותר.</p>
+  <ul>
+    <li>תכונה ייחודית: חדק ארוך</li>
+  </ul>
+</div>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  background-color: #f8fafc;            /* צבע רקע בהיר לדף */
+  padding: 20px;                        /* מרווח פנימי מהשוליים */
+}
+
+h1 {                                    /* בוחר את הכותרת הראשית */
+  color: #1e3a8a;                       /* צבע כחול כהה לטקסט */
+  text-align: center;                   /* מרכוז הכותרת */
+}
+
+a {                                     /* בוחר את כל הקישורים */
+  color: #2563eb;                       /* צבע כחול לקישור */
+  font-weight: bold;                    /* כתב מודגש */
+  text-decoration: none;                /* הסרת הקו התחתון */
+}
+
+.card {                                 /* בוחר כל אלמנט עם class בשם card */
+  background: linear-gradient(135deg, #ffffff, #f1f5f9); /* מעבר צבע אלכסוני עדין */
+  border: 1px solid #cbd5e1;            /* מסגרת דקה באפור */
+  border-radius: 12px;                  /* עיגול פינות */
+  padding: 20px;                        /* מרווח פנימי בין המסגרת לתוכן */
+  margin-top: 15px;                     /* מרווח חיצוני מעל הכרטיסייה */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* צל עדין מתחת לכרטיסייה */
+}
+
+.card h2 {                              /* בוחר כותרת h2 שנמצאת בתוך card */
+  color: #1e3a8a;                       /* צבע כחול כהה */
+  margin-bottom: 8px;                   /* מרווח חיצוני מתחת לכותרת */
+}
+
+.card p {                               /* בוחר פסקאות בתוך card */
+  color: #334155;                       /* צבע אפור כהה לקריאות */
+  line-height: 1.5;                     /* גובה שורה נוח לקריאה */
+}
+
+.card ul {                              /* בוחר רשימות בתוך card */
+  margin-top: 8px;                      /* מרווח חיצוני מעל הרשימה */
+  margin-right: 20px;                   /* הזחה מימין (הדף בעברית) */
+  color: #475569;                       /* צבע אפור לטקסט הרשימה */
+}`
       },
+
       imageText: {
-        html: `<div class="image-text-container">\n  <img src="Images/nature.jpg" alt="דוגמה">\n  <p>זהו טקסט המופיע לצד התמונה... Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>\n</div>`,
-        css: `body {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 20px;\n}\n\n.image-text-container {\n  display: flex;\n  align-items: center;\n  gap: 15px;\n  margin-bottom: 10px;\n  background: #ffffff;\n  padding: 15px;\n  border-radius: 10px;\n  border: 1px solid #cbd5e1;\n  box-shadow: 0 4px 6px rgba(0,0,0,0.05);\n}\n\n.image-text-container img {\n  max-width: 200px;\n  border-radius: 6px;\n}`
+        html: `<div class="image-text-container">
+  <img src="Images/nature.jpg" alt="דוגמה">
+  <p>זהו טקסט המופיע לצד התמונה... Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+</div>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  background-color: #f1f5f9;            /* צבע רקע אפור-כחלחל בהיר */
+  padding: 30px;                        /* מרווח פנימי מהשוליים */
+}
+
+.image-text-container {                 /* המכולה שמחזיקה את התמונה והטקסט */
+  display: flex;                        /* סידור הילדים בשורה אחת (Flexbox) */
+  align-items: center;                  /* יישור אנכי למרכז */
+  gap: 25px;                            /* מרווח קבוע בין התמונה לטקסט */
+  max-width: 720px;                     /* הגבלת הרוחב כדי שלא יימתח על כל המסך */
+  margin: 0 auto;                       /* מרכוז המכולה בדף (0 למעלה/למטה, auto לצדדים) */
+  background: #ffffff;                  /* רקע לבן */
+  padding: 25px;                        /* מרווח פנימי מסביב לתוכן */
+  border-radius: 16px;                  /* עיגול פינות */
+  border: 1px solid #cbd5e1;            /* מסגרת דקה באפור */
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08); /* צל רך מתחת למכולה */
+}
+
+.image-text-container img {             /* בוחר את התמונה בתוך המכולה */
+  width: 220px;                         /* רוחב קבוע לתמונה */
+  height: 160px;                        /* גובה קבוע לתמונה */
+  object-fit: cover;                    /* חיתוך התמונה כך שתמלא את המסגרת בלי להימתח */
+  flex-shrink: 0;                       /* מונע מ-Flexbox לכווץ את התמונה כשהטקסט ארוך */
+  border-radius: 12px;                  /* עיגול פינות התמונה */
+  background: #cbd5e1;                  /* צבע רקע אפור למקרה שהתמונה לא נטענה */
+}
+
+.image-text-container p {               /* בוחר את הטקסט שלצד התמונה */
+  font-size: 18px;                      /* גודל טקסט נוח לקריאה */
+  line-height: 1.7;                     /* ריווח שורות נדיב */
+  color: #334155;                       /* צבע אפור כהה */
+}`
       },
-      interactiveHover: {
-        html: `<h3>בחר אילו פקודות CSS להפעיל:</h3>\n<div class="controls-box">\n  <label><input type="checkbox" id="chk-bg" checked onchange="updateInteractiveDemo()"> צבע רקע (background-color)</label><br>\n  <label><input type="checkbox" id="chk-pad" checked onchange="updateInteractiveDemo()"> מרווח פנימי (padding)</label><br>\n  <label><input type="checkbox" id="chk-radius" checked onchange="updateInteractiveDemo()"> פינות מעוגלות (border-radius)</label><br>\n  <label><input type="checkbox" id="chk-shadow" checked onchange="updateInteractiveDemo()"> צללית (box-shadow)</label>\n</div>\n\n<button class="demo-btn">כפתור להדגמה</button>`,
-        css: `/* מעבדה אינטראקטיבית לבדיקת השפעת פקודות CSS */\nbody {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 30px;\n  text-align: center;\n}\n\n.controls-box {\n  background: #ffffff;\n  padding: 15px;\n  border-radius: 8px;\n  border: 1px solid #cbd5e1;\n  display: inline-block;\n  text-align: right;\n  margin-bottom: 20px;\n  font-size: 14px;\n}\n\n.demo-btn {\n  display: block;\n  margin: 0 auto;\n  font-size: 18px;\n  color: white;\n  background-color: #2563eb;\n  border: none;\n  cursor: pointer;\n}`
+
+      flexbox: {
+        html: `<div class="container">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+</div>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  background-color: #f8fafc;            /* צבע רקע בהיר */
+  margin: 0;                            /* איפוס השוליים החיצוניים של הדף */
+  padding: 20px;                        /* מרווח פנימי מהקצוות */
+}
+
+.container {                            /* המכולה של התיבות */
+  display: flex;                        /* הפיכת המכולה ל-Flexbox */
+  justify-content: space-around;        /* פיזור התיבות לאורך השורה עם רווחים שווים */
+  align-items: center;                  /* יישור אנכי של התיבות למרכז */
+  background-color: #f1f5f9;            /* רקע אפור בהיר להדגשת האזור */
+  padding: 20px;                        /* מרווח פנימי */
+  border-radius: 10px;                  /* עיגול פינות */
+  gap: 10px;                            /* מרווח מינימלי בין התיבות */
+  height: 80vh;                         /* גובה של 80% מגובה החלון */
+}
+
+.item {                                 /* כל תיבה בתוך המכולה */
+  background-color: #0ea5e9;            /* רקע תכלת */
+  color: white;                         /* טקסט לבן */
+  padding: 20px 30px;                   /* מרווח פנימי: 20 למעלה/למטה, 30 לצדדים */
+  font-size: 22px;                      /* גודל הטקסט */
+  font-weight: bold;                    /* כתב מודגש */
+  border-radius: 8px;                   /* עיגול פינות */
+}`
       },
+
       hoverDemo: {
         html: `<button class="my-btn">העבר עליי עכבר</button>`,
-        css: `body {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 80vh;\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n}\n\n.my-btn {\n  background-color: #64748b;\n  color: white;\n  font-size: 18px;\n  padding: 12px 24px;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: all 0.3s ease;\n}\n\n.my-btn:hover {\n  background-color: #2563eb;\n  transform: scale(1.1);\n}`
+        css: `/* עיצוב גוף הדף במרכז */
+body {                                  /* בוחר את כל גוף הדף */
+  display: flex;                        /* הפעלת Flexbox על הדף */
+  justify-content: center;              /* מרכוז אופקי של הכפתור */
+  align-items: center;                  /* מרכוז אנכי של הכפתור */
+  height: 80vh;                         /* גובה של 80% מגובה החלון */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  background-color: #f8fafc;            /* צבע רקע בהיר */
+}
+
+/* עיצוב רגיל של הכפתור */
+.my-btn {                               /* בוחר את הכפתור */
+  background-color: #64748b;            /* רקע אפור */
+  color: white;                         /* טקסט לבן */
+  font-size: 18px;                      /* גודל הטקסט */
+  padding: 12px 24px;                   /* מרווח פנימי: 12 למעלה/למטה, 24 לצדדים */
+  border: none;                         /* הסרת המסגרת הברירת מחדל */
+  border-radius: 8px;                   /* עיגול פינות */
+  cursor: pointer;                      /* סמן העכבר הופך ליד */
+  transition: all 0.3s ease;            /* מעבר חלק לכל שינוי (0.3 שניות) */
+}
+
+/* שינוי צבע והגדלה בעת ריחוף העכבר */
+.my-btn:hover {                         /* הכפתור בזמן שהעכבר מעליו */
+  background-color: #2563eb;            /* שינוי הרקע מאפור לכחול */
+  transform: scale(1.1);                /* הגדלת הכפתור ב-10% */
+}`
       },
-      flexbox: {
-        html: `<div class="container">\n  <div class="item">1</div>\n  <div class="item">2</div>\n  <div class="item">3</div>\n</div>`,
-        css: `.container {\n  display: flex;\n  justify-content: space-around;\n  align-items: center;\n  background-color: #f1f5f9;\n  padding: 20px;\n  border-radius: 10px;\n  gap: 10px;\n  height: 80vh;\n}\n\n.item {\n  background-color: #0ea5e9;\n  color: white;\n  padding: 20px 30px;\n  font-size: 22px;\n  font-weight: bold;\n  border-radius: 8px;\n}`
-      },
+
       threeCards: {
-        html: `<div class="container">\n  <h2 class="main-title">גלריית כרטיסיות מודרנית</h2>\n  <div class="cards-grid">\n    \n    <div class="modern-card">\n      <img src="Images/nature.jpg" alt="טבע">\n      <div class="card-content">\n        <h3>נופי הטבע</h3>\n        <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n    <div class="modern-card">\n      <img src="Images/mountain.jpg" alt="הר">\n      <div class="card-content">\n        <h3>פסגות ההרים</h3>\n        <p>טיפוס מאתגר אל נופים עוצרי נשימה ושלג עד.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n    <div class="modern-card">\n      <img src="Images/home.jpg" alt="בית">\n      <div class="card-content">\n        <h3>פינת השקט</h3>\n        <p>המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n  </div>\n</div>`,
-        css: `body {\n  background-color: #0f172a;\n  font-family: Arial, sans-serif;\n  padding: 15px;\n}\n\n.main-title {\n  text-align: center;\n  font-size: 1.2rem;\n  margin-bottom: 15px;\n  color: #38bdf8;\n}\n\n.cards-grid {\n  display: flex;\n  justify-content: center;\n  gap: 10px;\n}\n\n.modern-card {\n  background: #f1f5f9;\n  width: 31%;\n  border-radius: 8px;\n  overflow: hidden;\n  border: 1px solid #cbd5e1;\n  display: flex;\n  flex-direction: column;\n}\n\n.modern-card img {\n  width: 100%;\n  height: 70px;\n  object-fit: cover;\n}\n\n.card-content {\n  padding: 10px;\n  display: flex;\n  flex-direction: column;\n}\n\n.card-content h3 {\n  font-size: 13px;\n  margin-bottom: 4px;\n  color: #0f172a;\n}\n\n.card-content p {\n  font-size: 11px;\n  color: #475569;\n  line-height: 1.4;\n  margin-bottom: 8px;\n}\n\n.card-btn {\n  align-self: flex-start;\n  background-color: #2563eb;\n  color: white;\n  padding: 4px 8px;\n  border-radius: 4px;\n  text-decoration: none;\n  font-size: 10px;\n  font-weight: bold;\n}`
+        html: `<div class="container">
+  <h2 class="main-title">גלריית כרטיסיות מודרנית</h2>
+  <div class="cards-grid">
+
+    <div class="modern-card">
+      <img src="Images/nature.jpg" alt="טבע">
+      <div class="card-content">
+        <h3>נופי הטבע</h3>
+        <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+        <a href="#" class="card-btn">קרא עוד</a>
+      </div>
+    </div>
+
+    <div class="modern-card">
+      <img src="Images/mountain.jpg" alt="הר">
+      <div class="card-content">
+        <h3>פסגות ההרים</h3>
+        <p>טיפוס מאתגר אל נופים עוצרי נשימה ושלג עד.</p>
+        <a href="#" class="card-btn">קרא עוד</a>
+      </div>
+    </div>
+
+    <div class="modern-card">
+      <img src="Images/home.jpg" alt="בית">
+      <div class="card-content">
+        <h3>פינת השקט</h3>
+        <p>המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>
+        <a href="#" class="card-btn">קרא עוד</a>
+      </div>
+    </div>
+
+  </div>
+</div>`,
+        css: `/* עיצוב כללי: חישוב רוחב כולל מסגרת ומרווח פנימי */
+* {                                     /* בוחר את כל האלמנטים בדף */
+  box-sizing: border-box;               /* רוחב וגובה כוללים גם padding וגם border */
+}
+
+/* עיצוב גוף הדף הכהה ברקע */
+body {                                  /* בוחר את כל גוף הדף */
+  background-color: #0f172a;            /* רקע כחול כהה מאוד */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  padding: 30px 20px;                   /* מרווח פנימי: 30 למעלה/למטה, 20 לצדדים */
+}
+
+.container {                            /* המכולה הכללית של הגלריה */
+  max-width: 1000px;                    /* הגבלת רוחב כדי שהגלריה לא תימתח */
+  margin: 0 auto;                       /* מרכוז המכולה בדף */
+}
+
+.main-title {                           /* הכותרת הראשית של הגלריה */
+  text-align: center;                   /* מרכוז הכותרת */
+  font-size: 1.8rem;                    /* גודל יחסי לגודל הפונט של הדף */
+  margin-bottom: 25px;                  /* מרווח חיצוני מתחת לכותרת */
+  color: #38bdf8;                       /* צבע תכלת בהיר */
+}
+
+.cards-grid {                           /* המכולה של שלוש הכרטיסיות */
+  display: flex;                        /* סידור הכרטיסיות בשורה */
+  flex-wrap: wrap;                      /* אם אין מקום, כרטיסייה יורדת לשורה הבאה */
+  justify-content: center;              /* מרכוז הכרטיסיות */
+  gap: 20px;                            /* מרווח בין הכרטיסיות */
+}
+
+.modern-card {                          /* כל כרטיסייה */
+  flex: 1 1 220px;                      /* גדלה וקטנה לפי המקום, רוחב בסיס 220px */
+  max-width: 310px;                     /* רוחב מקסימלי לכרטיסייה */
+  background: #f8fafc;                  /* רקע לבן-אפרפר */
+  border-radius: 14px;                  /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך כל מה שיוצא מעבר לפינות המעוגלות */
+  display: flex;                        /* Flexbox בתוך הכרטיסייה */
+  flex-direction: column;               /* סידור התוכן בטור (מלמעלה למטה) */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35); /* צל כהה מתחת לכרטיסייה */
+  transition: transform 0.3s ease;      /* מעבר חלק בזמן ריחוף */
+}
+
+.modern-card:hover {                    /* הכרטיסייה בזמן שהעכבר מעליה */
+  transform: translateY(-6px);          /* הרמת הכרטיסייה 6 פיקסלים כלפי מעלה */
+}
+
+.modern-card img {                      /* התמונה בתוך הכרטיסייה */
+  width: 100%;                          /* התמונה ממלאת את כל רוחב הכרטיסייה */
+  height: 160px;                        /* גובה קבוע לתמונה */
+  object-fit: cover;                    /* חיתוך התמונה כך שתמלא את המסגרת בלי להימתח */
+  background: #cbd5e1;                  /* רקע אפור למקרה שהתמונה לא נטענה */
+}
+
+.card-content {                         /* אזור הטקסט בכרטיסייה */
+  padding: 18px;                        /* מרווח פנימי */
+  display: flex;                        /* Flexbox */
+  flex-direction: column;               /* סידור האלמנטים בטור */
+  flex: 1;                              /* האזור תופס את שאר גובה הכרטיסייה */
+}
+
+.card-content h3 {                      /* כותרת הכרטיסייה */
+  font-size: 20px;                      /* גודל הכותרת */
+  margin-bottom: 8px;                   /* מרווח חיצוני מתחת */
+  color: #0f172a;                       /* צבע כהה */
+}
+
+.card-content p {                       /* הטקסט בכרטיסייה */
+  font-size: 15px;                      /* גודל טקסט נוח לקריאה */
+  color: #475569;                       /* צבע אפור */
+  line-height: 1.6;                     /* גובה שורה */
+  margin-bottom: 16px;                  /* מרווח מתחת לפסקה */
+  flex: 1;                              /* דוחף את הכפתור לתחתית הכרטיסייה */
+}
+
+.card-btn {                             /* כפתור "קרא עוד" */
+  align-self: flex-start;               /* הכפתור לא נמתח לכל הרוחב אלא נשאר בקצה */
+  background-color: #2563eb;            /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 18px;                    /* מרווח פנימי */
+  border-radius: 8px;                   /* עיגול פינות */
+  text-decoration: none;                /* הסרת קו תחתון מהקישור */
+  font-size: 14px;                      /* גודל טקסט */
+  font-weight: bold;                    /* כתב מודגש */
+}`
       },
+
       flipCard: {
-        html: `<!-- Flip Card 3D Effect עם תמונות מקומיות -->\n<div class="flip-card">\n  <div class="flip-card-inner">\n    <div class="flip-card-front"></div>\n    <div class="flip-card-back"></div>\n  </div>\n</div>`,
-        css: `body {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 90vh;\n  background: linear-gradient(135deg, #1e1b4b, #312e81);\n}\n\n.flip-card {\n  perspective: 1000px;\n  width: 200px;\n  height: 200px;\n}\n\n.flip-card-inner {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transition: transform 0.8s;\n  transform-style: preserve-3d;\n}\n\n.flip-card:hover .flip-card-inner {\n  transform: rotateY(180deg);\n}\n\n.flip-card-front,\n.flip-card-back {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  backface-visibility: hidden;\n  border-radius: 12px;\n}\n\n.flip-card-front {\n  background: url('Images/nature.jpg') center/cover;\n}\n\n.flip-card-back {\n  background: url('Images/mountain.jpg') center/cover;\n  transform: rotateY(180deg);\n}`
+        html: `<!-- Flip Card 3D Effect עם תמונות מקומיות -->
+<div class="flip-card">
+  <div class="flip-card-inner">
+    <div class="flip-card-front"></div>
+    <div class="flip-card-back"></div>
+  </div>
+</div>`,
+        css: `/* עיצוב גוף הדף במרכז */
+body {                                  /* בוחר את כל גוף הדף */
+  display: flex;                        /* הפעלת Flexbox */
+  justify-content: center;              /* מרכוז אופקי */
+  align-items: center;                  /* מרכוז אנכי */
+  height: 90vh;                         /* גובה של 90% מגובה החלון */
+  background: linear-gradient(135deg, #1e1b4b, #312e81); /* רקע סגול כהה בגרדיאנט */
+}
+
+.flip-card {                            /* המסגרת החיצונית של הקלף */
+  perspective: 1000px;                  /* עומק תלת-ממדי (כמה רחוק המצלמה) */
+  width: 200px;                         /* רוחב הקלף */
+  height: 200px;                        /* גובה הקלף */
+}
+
+.flip-card-inner {                      /* המעטפת שמסתובבת */
+  position: relative;                   /* נקודת ייחוס לשני צידי הקלף */
+  width: 100%;                          /* ממלא את כל רוחב הקלף */
+  height: 100%;                         /* ממלא את כל גובה הקלף */
+  transition: transform 0.8s;           /* סיבוב חלק לאורך 0.8 שניות */
+  transform-style: preserve-3d;         /* שומר על ההשפעה התלת-ממדית של הילדים */
+}
+
+.flip-card:hover .flip-card-inner {     /* כשהעכבר מעל הקלף, משפיע על המעטפת הפנימית */
+  transform: rotateY(180deg);           /* סיבוב של 180 מעלות סביב הציר האנכי */
+}
+
+.flip-card-front,
+.flip-card-back {                       /* שני צידי הקלף (חזית וגב) יחד */
+  position: absolute;                   /* שני הצדדים ממוקמים אחד על השני */
+  width: 100%;                          /* ממלא את כל רוחב הקלף */
+  height: 100%;                         /* ממלא את כל גובה הקלף */
+  backface-visibility: hidden;          /* הסתרת הצד האחורי של כל צד בזמן הסיבוב */
+  border-radius: 12px;                  /* עיגול פינות */
+}
+
+.flip-card-front {                      /* חזית הקלף */
+  background: url('Images/nature.jpg') center/cover; /* תמונת רקע ממורכזת שממלאת את הקלף */
+}
+
+.flip-card-back {                       /* גב הקלף */
+  background: url('Images/mountain.jpg') center/cover; /* תמונת רקע אחרת */
+  transform: rotateY(180deg);           /* הגב מוסתב מראש כך שיופיע נכון אחרי הסיבוב */
+}`
       },
+
       page2: {
-        html: `<h2 style="color:#fff; text-align:center; font-size:16px;">גלריית אפקטים</h2>\n<div class="gallery">\n  <div class="image-container">\n    <img src="Images/nature.jpg" class="zoom" alt="טבע">\n    <p>הגדלה</p>\n  </div>\n  <div class="image-container">\n    <img src="Images/mountain.jpg" class="lift" alt="הר">\n    <p>הרמה</p>\n  </div>\n  <div class="image-container">\n    <img src="Images/home.jpg" class="flip" alt="בית">\n    <p>היפוך</p>\n  </div>\n</div>`,
-        css: `body { background: #0f172a; padding: 20px; font-family: Arial, sans-serif; text-align: center; }\n.gallery { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }\n.image-container { background: white; padding: 8px; border-radius: 6px; width: 110px; }\n.image-container img {\n  width: 100%;\n  height: 70px;\n  object-fit: cover;\n  transition: 0.3s;\n}\n.image-container p { font-size: 12px; margin-top: 5px; }\n.zoom:hover { transform: scale(1.1); }\n.lift:hover { transform: translateY(-5px); }\n.flip:hover { transform: rotateY(180deg); }`
+        html: `<h2 style="color:#fff; text-align:center; font-size:16px;">גלריית אפקטים</h2>
+<div class="gallery">
+  <div class="image-container">
+    <img src="Images/nature.jpg" class="zoom" alt="טבע">
+    <p>הגדלה</p>
+  </div>
+  <div class="image-container">
+    <img src="Images/mountain.jpg" class="lift" alt="הר">
+    <p>הרמה</p>
+  </div>
+  <div class="image-container">
+    <img src="Images/home.jpg" class="flip" alt="בית">
+    <p>היפוך</p>
+  </div>
+</div>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  background: #0f172a;                  /* רקע כחול כהה מאוד */
+  padding: 20px;                        /* מרווח פנימי מהשוליים */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  text-align: center;                   /* מרכוז הטקסט */
+}
+
+.gallery {                              /* המכולה של התמונות */
+  display: flex;                        /* סידור התמונות בשורה */
+  gap: 15px;                            /* מרווח בין התמונות */
+  justify-content: center;              /* מרכוז השורה */
+  margin-top: 15px;                     /* מרווח חיצוני מעל הגלריה */
+}
+
+.image-container {                      /* מסגרת לבנה סביב כל תמונה */
+  background: white;                    /* רקע לבן */
+  padding: 8px;                         /* מרווח פנימי */
+  border-radius: 6px;                   /* עיגול פינות */
+  width: 110px;                         /* רוחב קבוע */
+}
+
+.image-container img {                  /* התמונות בתוך המסגרת */
+  width: 100%;                          /* התמונה ממלאת את רוחב המסגרת */
+  height: 70px;                         /* גובה קבוע */
+  object-fit: cover;                    /* חיתוך התמונה בלי למתוח אותה */
+  transition: 0.3s;                     /* מעבר חלק לכל שינוי (0.3 שניות) */
+}
+
+.image-container p {                    /* הכיתוב מתחת לתמונה */
+  font-size: 12px;                      /* גודל טקסט קטן */
+  margin-top: 5px;                      /* מרווח חיצוני מעל הכיתוב */
+}
+
+.zoom:hover {                           /* תמונה עם class בשם zoom בזמן ריחוף */
+  transform: scale(1.1);                /* הגדלה ב-10% */
+}
+
+.lift:hover {                           /* תמונה עם class בשם lift בזמן ריחוף */
+  transform: translateY(-5px);          /* הזזה 5 פיקסלים כלפי מעלה */
+}
+
+.flip:hover {                           /* תמונה עם class בשם flip בזמן ריחוף */
+  transform: rotateY(180deg);           /* היפוך של התמונה סביב הציר האנכי */
+}`
       },
+
       page3: {
-        html: `<h2 style="color:#fff; text-align:center;">אפקטים אינסופיים</h2>\n<div class="gallery">\n  <div class="demo-box bounce">Bounce</div>\n  <div class="demo-box blink">Blink</div>\n  <div class="demo-box pulse">Pulse</div>\n</div>`,
-        css: `body { background: #0f172a; color: white; padding: 20px; font-family: Arial, sans-serif; text-align: center; }\n.gallery { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }\n.demo-box {\n  width: 80px;\n  height: 80px;\n  background: #2563eb;\n  border-radius: 8px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 12px;\n  font-weight: bold;\n}\n.bounce { animation: bounce 1.5s infinite ease-in-out; }\n@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }\n.blink { animation: blink 1s infinite alternate; }\n@keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.3; } }\n.pulse { animation: pulse 1.2s infinite ease-in-out; }\n@keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(0.9); } }`
+        html: `<h2 style="color:#fff; text-align:center;">אפקטים אינסופיים</h2>
+<div class="gallery">
+  <div class="demo-box bounce">Bounce</div>
+  <div class="demo-box blink">Blink</div>
+  <div class="demo-box pulse">Pulse</div>
+</div>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  background: #0f172a;                  /* רקע כחול כהה מאוד */
+  color: white;                         /* טקסט לבן */
+  padding: 20px;                        /* מרווח פנימי מהשוליים */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  text-align: center;                   /* מרכוז הטקסט */
+}
+
+.gallery {                              /* המכולה של שלוש התיבות */
+  display: flex;                        /* סידור בשורה */
+  gap: 20px;                            /* מרווח בין התיבות */
+  justify-content: center;              /* מרכוז השורה */
+  margin-top: 20px;                     /* מרווח חיצוני מעל */
+}
+
+.demo-box {                             /* עיצוב משותף לכל התיבות */
+  width: 80px;                          /* רוחב התיבה */
+  height: 80px;                         /* גובה התיבה */
+  background: #2563eb;                  /* רקע כחול */
+  border-radius: 8px;                   /* עיגול פינות */
+  display: flex;                        /* Flexbox למרכוז הטקסט */
+  justify-content: center;              /* מרכוז אופקי של הטקסט */
+  align-items: center;                  /* מרכוז אנכי של הטקסט */
+  font-size: 12px;                      /* גודל טקסט */
+  font-weight: bold;                    /* כתב מודגש */
+}
+
+.bounce {                               /* התיבה המקפצת */
+  animation: bounce 1.5s infinite ease-in-out; /* שם האנימציה, משך, חזרה אינסופית ותנועה חלקה */
+}
+
+@keyframes bounce {                     /* הגדרת שלבי אנימציית ההקפצה */
+  0%, 100% {                            /* בתחילת האנימציה ובסופה */
+    transform: translateY(0);           /* התיבה במקומה */
+  }
+  50% {                                 /* באמצע האנימציה */
+    transform: translateY(-10px);       /* התיבה למעלה ב-10 פיקסלים */
+  }
+}
+
+.blink {                                /* התיבה המהבהבת */
+  animation: blink 1s infinite alternate; /* חוזרת לנצח, הולכת ושבה (alternate) */
+}
+
+@keyframes blink {                      /* הגדרת שלבי אנימציית ההבהוב */
+  0% {                                  /* תחילת האנימציה */
+    opacity: 1;                         /* שקיפות מלאה (נראה לגמרי) */
+  }
+  100% {                                /* סוף האנימציה */
+    opacity: 0.3;                       /* כמעט שקוף */
+  }
+}
+
+.pulse {                                /* התיבה הפועמת */
+  animation: pulse 1.2s infinite ease-in-out; /* אנימציה אינסופית וחלקה */
+}
+
+@keyframes pulse {                      /* הגדרת שלבי אנימציית הפעימה */
+  0% {                                  /* תחילת האנימציה */
+    transform: scale(0.9);              /* התיבה מוקטנת מעט */
+  }
+  50% {                                 /* אמצע האנימציה */
+    transform: scale(1.05);             /* התיבה מוגדלת מעט */
+  }
+  100% {                                /* סוף האנימציה */
+    transform: scale(0.9);              /* חוזרת לגודל המוקטן */
+  }
+}`
       },
+
       page4: {
         html: `<h2 style="color: #fff; text-align:center;">אנימציית גרדיאנט</h2>`,
-        css: `body {\n  height: 80vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #ff8800);\n  background-size: 500% 500%;\n  animation: gradientBG 5s ease infinite;\n  font-family: Arial, sans-serif;\n  color: white;\n}\n@keyframes gradientBG {\n  0% { background-position: 0% 50%; }\n  50% { background-position: 100% 50%; }\n  100% { background-position: 0% 50%; }\n}`
+        css: `/* עיצוב גוף הדף עם אנימציית גרדיאנט */
+body {                                  /* בוחר את כל גוף הדף */
+  height: 80vh;                         /* גובה של 80% מגובה החלון */
+  display: flex;                        /* הפעלת Flexbox */
+  justify-content: center;              /* מרכוז אופקי של הכותרת */
+  align-items: center;                  /* מרכוז אנכי של הכותרת */
+  background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #ff8800); /* מעבר בין 4 צבעים באלכסון */
+  background-size: 500% 500%;           /* הרקע גדול פי 5 מהדף כדי שיהיה מה להזיז */
+  animation: gradientBG 5s ease infinite; /* הפעלת האנימציה: 5 שניות, חזרה אינסופית */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  color: white;                         /* טקסט לבן */
+}
+
+@keyframes gradientBG {                 /* הגדרת שלבי האנימציה */
+  0% {                                  /* תחילת האנימציה */
+    background-position: 0% 50%;        /* הרקע בקצה אחד */
+  }
+  50% {                                 /* אמצע האנימציה */
+    background-position: 100% 50%;      /* הרקע זז לקצה השני */
+  }
+  100% {                                /* סוף האנימציה */
+    background-position: 0% 50%;        /* חזרה למצב ההתחלתי */
+  }
+}`
       },
+
       page6: {
-        html: `<section class="hero"><h1>Parallax</h1></section>\n<section class="content"><h2>תוכן גלילה</h2><p>גלול מטה...</p><div style="height: 300px;"></div></section>`,
-        css: `body { margin: 0; font-family: Arial, sans-serif; }\n.hero {\n  height: 40vh;\n  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/nature.jpg') center/cover fixed;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: white;\n}\n.content { padding: 20px; background: #0f172a; color: #fff; }`
+        html: `<section class="hero"><h1>Parallax</h1></section>
+<section class="content">
+  <h2>תוכן גלילה</h2>
+  <p>גלול מטה...</p>
+  <div style="height: 300px;"></div>
+</section>`,
+        css: `/* עיצוב גוף הדף */
+body {                                  /* בוחר את כל גוף הדף */
+  margin: 0;                            /* הסרת השוליים החיצוניים */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+}
+
+.hero {                                 /* אזור הפתיחה עם התמונה הגדולה */
+  height: 40vh;                         /* גובה של 40% מגובה החלון */
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/nature.jpg') center/cover fixed; /* שכבה כהה מעל תמונה קבועה (fixed) = אפקט Parallax */
+  display: flex;                        /* הפעלת Flexbox */
+  justify-content: center;              /* מרכוז אופקי של הכותרת */
+  align-items: center;                  /* מרכוז אנכי של הכותרת */
+  color: white;                         /* טקסט לבן */
+}
+
+.content {                              /* אזור התוכן שגולל מעל התמונה */
+  padding: 20px;                        /* מרווח פנימי */
+  background: #0f172a;                  /* רקע כחול כהה */
+  color: #fff;                          /* טקסט לבן */
+}`
       }
     };
 
-    let savedTopics = localStorage.getItem('playground_topics_interactive_v1');
-    let topics = savedTopics ? JSON.parse(savedTopics) : defaultTopics;
+    /* ================= צביעת קוד בסגנון VS Code (ללא ספריות חיצוניות) ================= */
+    const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const span = (cls, t) => `<span class="${cls}">${esc(t)}</span>`;
 
-    let currentTopic = 'interactiveHover';
-    let currentTab = 'css';
-    let fontSize = 15;
-
-    const htmlEditor = document.getElementById('editor-html');
-    const cssEditor = document.getElementById('editor-css');
-    const previewOutput = document.getElementById('preview-output');
-    const topicSelect = document.getElementById('topic-select');
-
-    function init() { 
-      loadTopic('interactiveHover'); 
+    // עוברת על כל ההתאמות של ביטוי רגולרי, ומחליפה כל התאמה בתוצאת fn
+    function run(text, re, fn) {
+      let out = '', last = 0, m;
+      re.lastIndex = 0;
+      while ((m = re.exec(text))) {
+        out += esc(text.slice(last, m.index)) + fn(m);
+        last = m.index + m[0].length;
+        if (m[0].length === 0) re.lastIndex++;
+      }
+      return out + esc(text.slice(last));
     }
 
-    function onTopicChange(topicKey) {
-      loadTopic(topicKey);
+    function highlightHTML(src) {
+      const tagRe = /<!--[\s\S]*?(?:-->|$)|<![^>]*>?|<\/?[a-zA-Z][^>]*>?/g;
+      return run(src, tagRe, m => {
+        const s = m[0];
+        if (s.startsWith('<!--')) return span('c', s);
+        if (s.startsWith('<!')) return span('av', s);
+        const t = s.match(/^(<\/?)([\w:-]*)([\s\S]*?)(\/?>?)$/);
+        const attrs = run(t[3], /([^\s=]+)(\s*=\s*)("[^"]*"|'[^']*'|[^\s"'>]+)?/g,
+          a => span('at', a[1]) + (a[2] ? esc(a[2]) : '') + (a[3] ? span('av', a[3]) : ''));
+        return span('tg', t[1]) + span('tg', t[2]) + attrs + span('tg', t[4]);
+      });
     }
 
-    function loadTopic(topicKey) {
-      currentTopic = topicKey;
-      topicSelect.value = topicKey;
+    function highlightSelector(text) {
+      return run(text, /(@[\w-]+)|(\d+(?:\.\d+)?%)|(::?[\w-]+(?:\([^)]*\))?)|([.#][\w-]+)|([\w-]+)|(\*)/g,
+        m => span(m[1] ? 'ar' : m[2] ? 'nm' : 'tg', m[0]));
+    }
 
-      htmlEditor.value = topics[topicKey] ? topics[topicKey].html : '';
-      cssEditor.value = topics[topicKey] ? topics[topicKey].css : '';
-      updatePreview();
+    function highlightValue(text) {
+      return run(text,
+        /("[^"]*"|'[^']*')|(#[0-9a-fA-F]{3,8}\b)|(-?(?:\d+\.?\d*|\.\d+)(?:%|[a-zA-Z]+)?)|([a-zA-Z-]+)(?=\()|(!important)|([a-zA-Z-]+)/g,
+        m => m[1] ? span('st', m[0])
+           : m[2] ? span('nm', m[0])
+           : m[3] ? span('nm', m[0])
+           : m[4] ? span('fn', m[0])
+           : m[5] ? span('ar', m[0])
+           : span('kw', m[0]));
+    }
+
+    function highlightCSS(src) {
+      let out = '', i = 0, depth = 0, mode = 'prop';
+      while (i < src.length) {
+        if (src.startsWith('/*', i)) {                       // הערה
+          let end = src.indexOf('*/', i + 2);
+          end = end === -1 ? src.length : end + 2;
+          out += span('c', src.slice(i, end)); i = end; continue;
+        }
+        const ch = src[i];
+        if (ch === '{') { out += '{'; depth++; mode = 'prop'; i++; continue; }
+        if (ch === '}') { out += '}'; depth = Math.max(0, depth - 1); mode = 'prop'; i++; continue; }
+        if (depth > 0 && ch === ';') { out += ';'; mode = 'prop'; i++; continue; }
+        if (depth > 0 && mode === 'prop' && ch === ':') { out += ':'; mode = 'val'; i++; continue; }
+
+        // האם מה שלפנינו הוא סלקטור מקונן (למשל 50% בתוך @keyframes)?
+        let nested = false;
+        if (depth > 0 && mode === 'prop') {
+          const rest = src.slice(i).replace(/\/\*[\s\S]*?\*\//g, x => ' '.repeat(x.length));
+          const k = rest.search(/[{};]/);
+          nested = k !== -1 && rest[k] === '{';
+        }
+        let j = i;                                           // אוספים קטע עד התו המיוחד הבא
+        while (j < src.length) {
+          const c = src[j];
+          if (src.startsWith('/*', j) || c === '{' || c === '}') break;
+          if (depth > 0 && (c === ';' || (mode === 'prop' && !nested && c === ':'))) break;
+          j++;
+        }
+        if (j === i) j = i + 1;
+        const chunk = src.slice(i, j);
+        if (depth === 0 || nested) out += highlightSelector(chunk);
+        else if (mode === 'prop') out += chunk.trim() ? span('at', chunk) : esc(chunk);
+        else out += highlightValue(chunk);
+        i = j;
+      }
+      return out;
+    }
+
+    /* ================= לוגיקת העורך ================= */
+    let activeTab = 'html'; let currentFontSize = 18;
+    function init() { onTopicChange('animals'); }
+
+    function onTopicChange(key) {
+      const topic = defaultTopics[key] || defaultTopics.animals;
+      document.getElementById('editor-html').value = topic.html;
+      document.getElementById('editor-css').value = topic.css;
+      triggerHighlight('html'); triggerHighlight('css'); updatePreview();
     }
 
     function switchTab(tab) {
-      currentTab = tab;
+      activeTab = tab;
       document.getElementById('tab-html').classList.toggle('active', tab === 'html');
       document.getElementById('tab-css').classList.toggle('active', tab === 'css');
-      htmlEditor.style.display = tab === 'html' ? 'block' : 'none';
-      cssEditor.style.display = tab === 'css' ? 'block' : 'none';
+      document.getElementById('wrapper-html').style.display = tab === 'html' ? 'block' : 'none';
+      document.getElementById('wrapper-css').style.display = tab === 'css' ? 'block' : 'none';
     }
 
-    function handleCodeInput() {
-      if (!topics[currentTopic]) topics[currentTopic] = {};
-      topics[currentTopic].html = htmlEditor.value;
-      topics[currentTopic].css = cssEditor.value;
-      localStorage.setItem('playground_topics_interactive_v1', JSON.stringify(topics));
-      updatePreview();
+    function handleInput(type) { triggerHighlight(type); updatePreview(); }
+
+    function triggerHighlight(t) {
+      const textarea = document.getElementById(`editor-${t}`);
+      const codeBlock = document.getElementById(`code-${t}`);
+      let text = textarea.value;
+      if (text.endsWith("\n")) { text += " "; }
+      codeBlock.innerHTML = t === 'html' ? highlightHTML(text) : highlightCSS(text);
+      handleScroll(t);
+    }
+
+    function handleScroll(type) {
+      const textarea = document.getElementById(`editor-${type}`);
+      const highlightLayer = textarea.nextElementSibling;
+      highlightLayer.scrollTop = textarea.scrollTop;
+      highlightLayer.scrollLeft = textarea.scrollLeft;
+    }
+
+    function buildPage(h, c) {
+      return `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${c}</style></head><body>${h}</body></html>`;
     }
 
     function updatePreview() {
-      const html = htmlEditor.value;
-      const css = cssEditor.value;
-      
-      // אם אנחנו בנושא האינטראקטיבי, נזריק לתוך ה-iframe פונקציית עדכון דינמית שמופעלת דרך ה-checkboxes
-      let dynamicScript = '';
-      if (currentTopic === 'interactiveHover') {
-        dynamicScript = `
-          <script>
-            function updateInteractiveDemo() {
-              const btn = document.querySelector('.demo-btn');
-              if (!btn) return;
-              btn.style.backgroundColor = document.getElementById('chk-bg').checked ? '#2563eb' : 'transparent';
-              btn.style.color = document.getElementById('chk-bg').checked ? 'white' : '#0f172a';
-              btn.style.padding = document.getElementById('chk-pad').checked ? '14px 28px' : '0px';
-              btn.style.borderRadius = document.getElementById('chk-radius').checked ? '10px' : '0px';
-              btn.style.boxShadow = document.getElementById('chk-shadow').checked ? '0 10px 15px rgba(0,0,0,0.2)' : 'none';
-            }
-            // הפעלה ראשונית
-            window.onload = updateInteractiveDemo;
-          <\/script>
-        `;
-      }
-
-      const combinedOutput = `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}${dynamicScript}</body></html>`;
-      const iframeDoc = previewOutput.contentDocument || previewOutput.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(combinedOutput);
-      iframeDoc.close();
+      const html = document.getElementById('editor-html').value;
+      const css = document.getElementById('editor-css').value;
+      document.getElementById('preview-output').srcdoc = buildPage(html, css);
     }
 
-    function adjustFontSize(delta) {
-      fontSize = Math.max(12, Math.min(26, fontSize + delta));
-      htmlEditor.style.fontSize = fontSize + 'px';
-      cssEditor.style.fontSize = fontSize + 'px';
+    function adjustFontSize(amount) {
+      currentFontSize = Math.max(12, currentFontSize + amount);
+      document.querySelectorAll('.code-editor, .highlight-layer').forEach(el => {
+        el.style.fontSize = currentFontSize + 'px';
+      });
     }
 
-    function resetCurrentCode() {
-      if (confirm('האם אתה בטוח שברצונך לאפס את הקוד לנוסח המקורי?')) {
-        topics[currentTopic] = JSON.parse(JSON.stringify(defaultTopics[currentTopic]));
-        localStorage.setItem('playground_topics_interactive_v1', JSON.stringify(topics));
-        loadTopic(currentTopic);
-      }
+    function resetCurrentCode() { onTopicChange(document.getElementById('topic-select').value); }
+    function setFullscreen(on) {
+      document.getElementById('preview-panel').classList.toggle('fullscreen-preview', on);
+      document.getElementById('fs-btn').textContent = on ? '⬅ חזרה למסך מפוצל' : '🖥️ מסך מלא';
     }
-
     function toggleFullscreen() {
-      document.getElementById('preview-panel').classList.toggle('fullscreen-preview');
+      setFullscreen(!document.getElementById('preview-panel').classList.contains('fullscreen-preview'));
     }
 
     function saveToFile() {
-      const html = htmlEditor.value;
-      const css = cssEditor.value;
-      const fullFileContent = `<!DOCTYPE html>\n<html lang="he" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>הקוד שלי - ${currentTopic}</title>\n  <style>\n${css}\n  </style>\n</head>\n<body>\n${html}\n</body>\n</html>`;
-      
-      const blob = new Blob([fullFileContent], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
+      const h = document.getElementById('editor-html').value;
+      const c = document.getElementById('editor-css').value;
+      const blob = new Blob([buildPage(h, c)], { type: 'text/html' });
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `${currentTopic}_page.html`;
-      a.click();
-      URL.revokeObjectURL(url);
+      a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
     }
+
+    // Tab מכניס רווחים בעורך, Esc יוצא ממסך מלא
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') setFullscreen(false);
+      if (e.key === 'Tab' && e.target.classList.contains('code-editor')) {
+        e.preventDefault();
+        const ta = e.target, s = ta.selectionStart;
+        ta.value = ta.value.slice(0, s) + '  ' + ta.value.slice(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = s + 2;
+        ta.dispatchEvent(new Event('input'));
+      }
+    });
 
     window.onload = init;
   </script>
