@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מעבדת קוד HTML & CSS - כלי להדגמה בכיתה</title>
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-surface: #ffffff;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --accent: #2563eb;
+      --code-bg: #ffffff;
+      --editor-font-size: 15px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: var(--bg-surface);
+      border-bottom: 2px solid var(--border-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .title-area h1 { font-size: 1.1rem; color: var(--accent); }
+
+    .topic-selector-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topic-selector-area label {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    #topic-select {
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    #topic-select:hover { background-color: #e2e8f0; }
+
+    .controls { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .btn-control {
+      background-color: #ffffff;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn-control:hover { background-color: #f1f5f9; }
+    .btn-save { background-color: #16a34a; color: white; border-color: #16a34a; }
+    .btn-save:hover { background-color: #15803d; }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      height: calc(100vh - 65px);
+      background-color: var(--border-color);
+      gap: 2px;
+    }
+
+    .pane-code {
+      background-color: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      direction: ltr;
+    }
+
+    .pane-header {
+      background-color: #f1f5f9;
+      padding: 8px 15px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      direction: rtl;
+    }
+
+    .tab-group { display: flex; gap: 5px; direction: ltr; }
+
+    .tab-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--border-color);
+      background: #e2e8f0;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .editor-wrapper { position: relative; flex: 1; width: 100%; height: 100%; }
+
+    textarea.code-editor {
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 15px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: var(--editor-font-size);
+      line-height: 1.5;
+      background-color: var(--code-bg);
+      color: #0f172a;
+      resize: none;
+      outline: none;
+      direction: ltr;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    .pane-preview { background-color: #ffffff; display: flex; flex-direction: column; }
+    iframe#preview-output { width: 100%; height: 100%; border: none; background-color: #ffffff; }
+
+    .fullscreen-preview { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-area">
+      <h1>🎓 מעבדת קוד HTML & CSS</h1>
+    </div>
+
+    <div class="topic-selector-area">
+      <label for="topic-select">בחר נושא שיעור:</label>
+      <select id="topic-select" onchange="onTopicChange(this.value)">
+        <optgroup label="📂 יסודות ומבנה עיצוב">
+          <option value="animals">1. דף חיות & Box Model</option>
+          <option value="imageText">2. 🖼️ שילוב תמונה וטקסט (Flexbox)</option>
+          <option value="flexbox">3. Flexbox Layout</option>
+        </optgroup>
+
+        <optgroup label="✨ אפקטים, מעברים וגלריות תמונות">
+          <option value="interactiveHover">4. 🖱️ מעבדה אינטראקטיבית: הדלק/כבה CSS עם Checkbox</option>
+          <option value="hoverDemo">5. אפקט Hover פשוט (עם הסברים)</option>
+          <option value="threeCards">6. 🌟 גלריית 3 כרטיסיות (עם תמונות ורקע רך)</option>
+          <option value="flipCard">7. Flip Card (אפקט 3D)</option>
+          <option value="page2">8. Hover Gallery (אפקטי מעבר על תמונות)</option>
+        </optgroup>
+
+        <optgroup label="🌀 אנימציות וגרדיאנטים">
+          <option value="page3">9. Infinite Animations (הקפצה והבהוב)</option>
+          <option value="page4">10. Animated Gradient Background</option>
+          <option value="page6">11. Parallax Hero Section</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="controls">
+      <button class="btn-control btn-save" onclick="saveToFile()">💾 הורד קובץ</button>
+      <button class="btn-control" onclick="adjustFontSize(1)">🔍 +פונט</button>
+      <button class="btn-control" onclick="adjustFontSize(-1)">🔍 -פונט</button>
+      <button class="btn-control" onclick="resetCurrentCode()">🔄 איפוס</button>
+      <button class="btn-control" onclick="toggleFullscreen()">🖥️ מסך מלא</button>
+    </div>
+  </header>
+
+  <main id="main-container">
+    <section class="pane-code">
+      <div class="pane-header">
+        <span>עורך קוד (בזמן אמת)</span>
+        <div class="tab-group">
+          <button class="tab-btn active" id="tab-html" onclick="switchTab('html')">HTML</button>
+          <button class="tab-btn" id="tab-css" onclick="switchTab('css')">CSS</button>
+        </div>
+      </div>
+      
+      <div class="editor-wrapper">
+        <textarea id="editor-html" class="code-editor" spellcheck="false" oninput="handleCodeInput()"></textarea>
+        <textarea id="editor-css" class="code-editor" spellcheck="false" oninput="handleCodeInput()" style="display: none;"></textarea>
+      </div>
+    </section>
+
+    <section class="pane-preview" id="preview-panel">
+      <div class="pane-header">
+        <span>תוצאה חיה (Preview)</span>
+      </div>
+      <iframe id="preview-output"></iframe>
+    </section>
+  </main>
+
+  <script>
+    const defaultTopics = {
+      animals: {
+        html: `<h1>עולם החיות המופלא</h1>\n<hr>\n\n<p>ניווט מהיר: <a href="#lion">אריה</a> | <a href="#elephant">פיל</a></p>\n\n<div class="card">\n  <h2 id="lion">1. אריה (מלך החיות)</h2>\n  <p>האריה הוא יונק טורף ממשפחת החתוליים.</p>\n  <ul>\n    <li>משקל: 150-250 ק"ג</li>\n    <li>מזון: בשר</li>\n  </ul>\n</div>\n\n<br>\n\n<div class="card">\n  <h2 id="elephant">2. פיל אפריקאי</h2>\n  <p>הפיל הוא היונק היבשתי הגדול ביותר.</p>\n  <ul>\n    <li>תכונה ייחודית: חדק ארוך</li>\n  </ul>\n</div>`,
+        css: `/* עיצוב גוף הדף */\nbody {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 20px;\n}\n\nh1 {\n  color: #1e3a8a;\n  text-align: center;\n}\n\na {\n  color: #2563eb;\n  font-weight: bold;\n  text-decoration: none;\n}\n\n.card {\n  background: linear-gradient(135deg, #ffffff, #f1f5f9);\n  border: 1px solid #cbd5e1;\n  border-radius: 12px;\n  padding: 20px;\n  margin-top: 15px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);\n}\n\n.card h2 {\n  color: #1e3a8a;\n  margin-bottom: 8px;\n}\n\n.card p {\n  color: #334155;\n  line-height: 1.5;\n}\n\n.card ul {\n  margin-top: 8px;\n  margin-right: 20px;\n  color: #475569;\n}`
+      },
+      imageText: {
+        html: `<div class="image-text-container">\n  <img src="Images/nature.jpg" alt="דוגמה">\n  <p>זהו טקסט המופיע לצד התמונה... Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>\n</div>`,
+        css: `body {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 20px;\n}\n\n.image-text-container {\n  display: flex;\n  align-items: center;\n  gap: 15px;\n  margin-bottom: 10px;\n  background: #ffffff;\n  padding: 15px;\n  border-radius: 10px;\n  border: 1px solid #cbd5e1;\n  box-shadow: 0 4px 6px rgba(0,0,0,0.05);\n}\n\n.image-text-container img {\n  max-width: 200px;\n  border-radius: 6px;\n}`
+      },
+      interactiveHover: {
+        html: `<h3>בחר אילו פקודות CSS להפעיל:</h3>\n<div class="controls-box">\n  <label><input type="checkbox" id="chk-bg" checked onchange="updateInteractiveDemo()"> צבע רקע (background-color)</label><br>\n  <label><input type="checkbox" id="chk-pad" checked onchange="updateInteractiveDemo()"> מרווח פנימי (padding)</label><br>\n  <label><input type="checkbox" id="chk-radius" checked onchange="updateInteractiveDemo()"> פינות מעוגלות (border-radius)</label><br>\n  <label><input type="checkbox" id="chk-shadow" checked onchange="updateInteractiveDemo()"> צללית (box-shadow)</label>\n</div>\n\n<button class="demo-btn">כפתור להדגמה</button>`,
+        css: `/* מעבדה אינטראקטיבית לבדיקת השפעת פקודות CSS */\nbody {\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n  padding: 30px;\n  text-align: center;\n}\n\n.controls-box {\n  background: #ffffff;\n  padding: 15px;\n  border-radius: 8px;\n  border: 1px solid #cbd5e1;\n  display: inline-block;\n  text-align: right;\n  margin-bottom: 20px;\n  font-size: 14px;\n}\n\n.demo-btn {\n  display: block;\n  margin: 0 auto;\n  font-size: 18px;\n  color: white;\n  background-color: #2563eb;\n  border: none;\n  cursor: pointer;\n}`
+      },
+      hoverDemo: {
+        html: `<button class="my-btn">העבר עליי עכבר</button>`,
+        css: `body {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 80vh;\n  font-family: Arial, sans-serif;\n  background-color: #f8fafc;\n}\n\n.my-btn {\n  background-color: #64748b;\n  color: white;\n  font-size: 18px;\n  padding: 12px 24px;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: all 0.3s ease;\n}\n\n.my-btn:hover {\n  background-color: #2563eb;\n  transform: scale(1.1);\n}`
+      },
+      flexbox: {
+        html: `<div class="container">\n  <div class="item">1</div>\n  <div class="item">2</div>\n  <div class="item">3</div>\n</div>`,
+        css: `.container {\n  display: flex;\n  justify-content: space-around;\n  align-items: center;\n  background-color: #f1f5f9;\n  padding: 20px;\n  border-radius: 10px;\n  gap: 10px;\n  height: 80vh;\n}\n\n.item {\n  background-color: #0ea5e9;\n  color: white;\n  padding: 20px 30px;\n  font-size: 22px;\n  font-weight: bold;\n  border-radius: 8px;\n}`
+      },
+      threeCards: {
+        html: `<div class="container">\n  <h2 class="main-title">גלריית כרטיסיות מודרנית</h2>\n  <div class="cards-grid">\n    \n    <div class="modern-card">\n      <img src="Images/nature.jpg" alt="טבע">\n      <div class="card-content">\n        <h3>נופי הטבע</h3>\n        <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n    <div class="modern-card">\n      <img src="Images/mountain.jpg" alt="הר">\n      <div class="card-content">\n        <h3>פסגות ההרים</h3>\n        <p>טיפוס מאתגר אל נופים עוצרי נשימה ושלג עד.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n    <div class="modern-card">\n      <img src="Images/home.jpg" alt="בית">\n      <div class="card-content">\n        <h3>פינת השקט</h3>\n        <p>המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>\n        <a href="#" class="card-btn">קרא עוד</a>\n      </div>\n    </div>\n\n  </div>\n</div>`,
+        css: `body {\n  background-color: #0f172a;\n  font-family: Arial, sans-serif;\n  padding: 15px;\n}\n\n.main-title {\n  text-align: center;\n  font-size: 1.2rem;\n  margin-bottom: 15px;\n  color: #38bdf8;\n}\n\n.cards-grid {\n  display: flex;\n  justify-content: center;\n  gap: 10px;\n}\n\n.modern-card {\n  background: #f1f5f9;\n  width: 31%;\n  border-radius: 8px;\n  overflow: hidden;\n  border: 1px solid #cbd5e1;\n  display: flex;\n  flex-direction: column;\n}\n\n.modern-card img {\n  width: 100%;\n  height: 70px;\n  object-fit: cover;\n}\n\n.card-content {\n  padding: 10px;\n  display: flex;\n  flex-direction: column;\n}\n\n.card-content h3 {\n  font-size: 13px;\n  margin-bottom: 4px;\n  color: #0f172a;\n}\n\n.card-content p {\n  font-size: 11px;\n  color: #475569;\n  line-height: 1.4;\n  margin-bottom: 8px;\n}\n\n.card-btn {\n  align-self: flex-start;\n  background-color: #2563eb;\n  color: white;\n  padding: 4px 8px;\n  border-radius: 4px;\n  text-decoration: none;\n  font-size: 10px;\n  font-weight: bold;\n}`
+      },
+      flipCard: {
+        html: `<!-- Flip Card 3D Effect עם תמונות מקומיות -->\n<div class="flip-card">\n  <div class="flip-card-inner">\n    <div class="flip-card-front"></div>\n    <div class="flip-card-back"></div>\n  </div>\n</div>`,
+        css: `body {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 90vh;\n  background: linear-gradient(135deg, #1e1b4b, #312e81);\n}\n\n.flip-card {\n  perspective: 1000px;\n  width: 200px;\n  height: 200px;\n}\n\n.flip-card-inner {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transition: transform 0.8s;\n  transform-style: preserve-3d;\n}\n\n.flip-card:hover .flip-card-inner {\n  transform: rotateY(180deg);\n}\n\n.flip-card-front,\n.flip-card-back {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  backface-visibility: hidden;\n  border-radius: 12px;\n}\n\n.flip-card-front {\n  background: url('Images/nature.jpg') center/cover;\n}\n\n.flip-card-back {\n  background: url('Images/mountain.jpg') center/cover;\n  transform: rotateY(180deg);\n}`
+      },
+      page2: {
+        html: `<h2 style="color:#fff; text-align:center; font-size:16px;">גלריית אפקטים</h2>\n<div class="gallery">\n  <div class="image-container">\n    <img src="Images/nature.jpg" class="zoom" alt="טבע">\n    <p>הגדלה</p>\n  </div>\n  <div class="image-container">\n    <img src="Images/mountain.jpg" class="lift" alt="הר">\n    <p>הרמה</p>\n  </div>\n  <div class="image-container">\n    <img src="Images/home.jpg" class="flip" alt="בית">\n    <p>היפוך</p>\n  </div>\n</div>`,
+        css: `body { background: #0f172a; padding: 20px; font-family: Arial, sans-serif; text-align: center; }\n.gallery { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }\n.image-container { background: white; padding: 8px; border-radius: 6px; width: 110px; }\n.image-container img {\n  width: 100%;\n  height: 70px;\n  object-fit: cover;\n  transition: 0.3s;\n}\n.image-container p { font-size: 12px; margin-top: 5px; }\n.zoom:hover { transform: scale(1.1); }\n.lift:hover { transform: translateY(-5px); }\n.flip:hover { transform: rotateY(180deg); }`
+      },
+      page3: {
+        html: `<h2 style="color:#fff; text-align:center;">אפקטים אינסופיים</h2>\n<div class="gallery">\n  <div class="demo-box bounce">Bounce</div>\n  <div class="demo-box blink">Blink</div>\n  <div class="demo-box pulse">Pulse</div>\n</div>`,
+        css: `body { background: #0f172a; color: white; padding: 20px; font-family: Arial, sans-serif; text-align: center; }\n.gallery { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }\n.demo-box {\n  width: 80px;\n  height: 80px;\n  background: #2563eb;\n  border-radius: 8px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 12px;\n  font-weight: bold;\n}\n.bounce { animation: bounce 1.5s infinite ease-in-out; }\n@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }\n.blink { animation: blink 1s infinite alternate; }\n@keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.3; } }\n.pulse { animation: pulse 1.2s infinite ease-in-out; }\n@keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(0.9); } }`
+      },
+      page4: {
+        html: `<h2 style="color: #fff; text-align:center;">אנימציית גרדיאנט</h2>`,
+        css: `body {\n  height: 80vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #ff8800);\n  background-size: 500% 500%;\n  animation: gradientBG 5s ease infinite;\n  font-family: Arial, sans-serif;\n  color: white;\n}\n@keyframes gradientBG {\n  0% { background-position: 0% 50%; }\n  50% { background-position: 100% 50%; }\n  100% { background-position: 0% 50%; }\n}`
+      },
+      page6: {
+        html: `<section class="hero"><h1>Parallax</h1></section>\n<section class="content"><h2>תוכן גלילה</h2><p>גלול מטה...</p><div style="height: 300px;"></div></section>`,
+        css: `body { margin: 0; font-family: Arial, sans-serif; }\n.hero {\n  height: 40vh;\n  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/nature.jpg') center/cover fixed;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: white;\n}\n.content { padding: 20px; background: #0f172a; color: #fff; }`
+      }
+    };
+
+    let savedTopics = localStorage.getItem('playground_topics_interactive_v1');
+    let topics = savedTopics ? JSON.parse(savedTopics) : defaultTopics;
+
+    let currentTopic = 'interactiveHover';
+    let currentTab = 'css';
+    let fontSize = 15;
+
+    const htmlEditor = document.getElementById('editor-html');
+    const cssEditor = document.getElementById('editor-css');
+    const previewOutput = document.getElementById('preview-output');
+    const topicSelect = document.getElementById('topic-select');
+
+    function init() { 
+      loadTopic('interactiveHover'); 
+    }
+
+    function onTopicChange(topicKey) {
+      loadTopic(topicKey);
+    }
+
+    function loadTopic(topicKey) {
+      currentTopic = topicKey;
+      topicSelect.value = topicKey;
+
+      htmlEditor.value = topics[topicKey] ? topics[topicKey].html : '';
+      cssEditor.value = topics[topicKey] ? topics[topicKey].css : '';
+      updatePreview();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-html').classList.toggle('active', tab === 'html');
+      document.getElementById('tab-css').classList.toggle('active', tab === 'css');
+      htmlEditor.style.display = tab === 'html' ? 'block' : 'none';
+      cssEditor.style.display = tab === 'css' ? 'block' : 'none';
+    }
+
+    function handleCodeInput() {
+      if (!topics[currentTopic]) topics[currentTopic] = {};
+      topics[currentTopic].html = htmlEditor.value;
+      topics[currentTopic].css = cssEditor.value;
+      localStorage.setItem('playground_topics_interactive_v1', JSON.stringify(topics));
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const html = htmlEditor.value;
+      const css = cssEditor.value;
+      
+      // אם אנחנו בנושא האינטראקטיבי, נזריק לתוך ה-iframe פונקציית עדכון דינמית שמופעלת דרך ה-checkboxes
+      let dynamicScript = '';
+      if (currentTopic === 'interactiveHover') {
+        dynamicScript = `
+          <script>
+            function updateInteractiveDemo() {
+              const btn = document.querySelector('.demo-btn');
+              if (!btn) return;
+              btn.style.backgroundColor = document.getElementById('chk-bg').checked ? '#2563eb' : 'transparent';
+              btn.style.color = document.getElementById('chk-bg').checked ? 'white' : '#0f172a';
+              btn.style.padding = document.getElementById('chk-pad').checked ? '14px 28px' : '0px';
+              btn.style.borderRadius = document.getElementById('chk-radius').checked ? '10px' : '0px';
+              btn.style.boxShadow = document.getElementById('chk-shadow').checked ? '0 10px 15px rgba(0,0,0,0.2)' : 'none';
+            }
+            // הפעלה ראשונית
+            window.onload = updateInteractiveDemo;
+          <\/script>
+        `;
+      }
+
+      const combinedOutput = `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}${dynamicScript}</body></html>`;
+      const iframeDoc = previewOutput.contentDocument || previewOutput.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(combinedOutput);
+      iframeDoc.close();
+    }
+
+    function adjustFontSize(delta) {
+      fontSize = Math.max(12, Math.min(26, fontSize + delta));
+      htmlEditor.style.fontSize = fontSize + 'px';
+      cssEditor.style.fontSize = fontSize + 'px';
+    }
+
+    function resetCurrentCode() {
+      if (confirm('האם אתה בטוח שברצונך לאפס את הקוד לנוסח המקורי?')) {
+        topics[currentTopic] = JSON.parse(JSON.stringify(defaultTopics[currentTopic]));
+        localStorage.setItem('playground_topics_interactive_v1', JSON.stringify(topics));
+        loadTopic(currentTopic);
+      }
+    }
+
+    function toggleFullscreen() {
+      document.getElementById('preview-panel').classList.toggle('fullscreen-preview');
+    }
+
+    function saveToFile() {
+      const html = htmlEditor.value;
+      const css = cssEditor.value;
+      const fullFileContent = `<!DOCTYPE html>\n<html lang="he" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>הקוד שלי - ${currentTopic}</title>\n  <style>\n${css}\n  </style>\n</head>\n<body>\n${html}\n</body>\n</html>`;
+      
+      const blob = new Blob([fullFileContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentTopic}_page.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
