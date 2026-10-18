@@ -48,6 +48,10 @@
     .g-row { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .g-row input { width: 22px; height: 22px; cursor: pointer; accent-color: #16a34a; }
     .g-row:hover { background: #dbeafe; }
+    .g-row.rule { background: #e0e7ff; border-top: 1px solid #a5b4fc; }
+    .g-row.rule input { width: 24px; height: 24px; accent-color: #1d4ed8; }
+    .g-row.cov { opacity: 0.35; cursor: not-allowed; }
+    .g-row.cov input { cursor: not-allowed; }
     .off { background: rgba(220, 38, 38, 0.12); opacity: 0.5; text-decoration: line-through; text-decoration-color: #dc2626; }
     #enable-all { display: none; background: #16a34a; border-color: #16a34a; color: white; }
 
@@ -69,7 +73,7 @@
 </head>
 <body>
   <header>
-    <div class="title-area"><h1>🎓 מעבדת קוד HTML & CSS</h1></div>
+    <div class="title-area"><h1>🎓 מעבדת HTML & CSS של יוסי פרפארה</h1></div>
     <div class="topic-selector-area">
       <label for="topic-select">בחר נושא:</label>
       <select id="topic-select" onchange="onTopicChange(this.value)">
@@ -429,7 +433,7 @@ body {                                  /* בוחר את כל גוף הדף */
       },
 
       flipCard: {
-        html: `<!-- Flip Card 3D Effect עם תמונות מקומיות -->
+        html: `<\!-- Flip Card 3D Effect עם תמונות מקומיות --\>
 <div class="flip-card">
   <div class="flip-card-inner">
     <div class="flip-card-front"></div>
@@ -697,17 +701,27 @@ body {                                  /* בוחר את כל גוף הדף */
       return out + esc(text.slice(last));
     }
 
+    // רצפי התווים של הערת HTML נבנים מחלקים, כדי שלא יופיעו כמות שהם בתוך תגית ה-script
+    const CMT_OPEN = '<' + '!--';
+    const CMT_CLOSE = '--' + '>';
+    const TAG_RE = new RegExp(CMT_OPEN + '[\\s\\S]*?(?:' + CMT_CLOSE + '|$)|<![^>]*>?|<\\/?[a-zA-Z][^>]*>?', 'g');
+    const ATTR_RE = /([^\s=]+)(\s*=\s*)("[^"]*"|'[^']*'|[^\s"'>]+)?/g;
+
+    function highlightAttr(a) {
+      return span('at', a[1]) + (a[2] ? esc(a[2]) : '') + (a[3] ? span('av', a[3]) : '');
+    }
+
+    function highlightTag(m) {
+      const s = m[0];
+      if (s.startsWith(CMT_OPEN)) return span('c', s);
+      if (s.startsWith('<!')) return span('av', s);
+      const t = s.match(/^(<\/?)([\w:-]*)([\s\S]*?)(\/?>?)$/);
+      if (!t) return esc(s);
+      return span('tg', t[1]) + span('tg', t[2]) + run(t[3], ATTR_RE, highlightAttr) + span('tg', t[4]);
+    }
+
     function highlightHTML(src) {
-      const tagRe = /<!--[\s\S]*?(?:-->|$)|<![^>]*>?|<\/?[a-zA-Z][^>]*>?/g;
-      return run(src, tagRe, m => {
-        const s = m[0];
-        if (s.startsWith('<!--')) return span('c', s);
-        if (s.startsWith('<!')) return span('av', s);
-        const t = s.match(/^(<\/?)([\w:-]*)([\s\S]*?)(\/?>?)$/);
-        const attrs = run(t[3], /([^\s=]+)(\s*=\s*)("[^"]*"|'[^']*'|[^\s"'>]+)?/g,
-          a => span('at', a[1]) + (a[2] ? esc(a[2]) : '') + (a[3] ? span('av', a[3]) : ''));
-        return span('tg', t[1]) + span('tg', t[2]) + attrs + span('tg', t[4]);
-      });
+      return run(src, TAG_RE, highlightTag);
     }
 
     function highlightSelector(text) {
@@ -772,7 +786,7 @@ body {                                  /* בוחר את כל גוף הדף */
       const topic = defaultTopics[key] || defaultTopics.animals;
       document.getElementById('editor-html').value = topic.html;
       document.getElementById('editor-css').value = topic.css;
-      disabledLines.clear();
+      disabledLines.clear(); disabledRules.clear();
       prevCssLines = document.getElementById('editor-css').value.split('\n').length;
       renderGutter();
       triggerHighlight('html'); triggerHighlight('css'); updatePreview();
@@ -788,29 +802,65 @@ body {                                  /* בוחר את כל גוף הדף */
       if (tab === 'css') renderGutter();
     }
 
-    /* ===== הפעלה/כיבוי של שורות CSS ===== */
-    let disabledLines = new Set();   // מספרי השורות (מ-0) שכובו
+    /* ===== הפעלה/כיבוי של שורות וכללי CSS ===== */
+    let disabledLines = new Set();   // שורות מאפיין בודדות שכובו (מספר שורה, מ-0)
+    let disabledRules = new Set();   // כללים שלמים שכובו (מספר שורת הסלקטור הראשונה)
+    let parsedCSS = { decl: [], rules: [] };
     let prevCssLines = 0;
 
-    // מחזירה לכל שורה: האם זו שורת מאפיין (property: value) בתוך בלוק { }
-    function declLines(text) {
+    // מנתחת את ה-CSS: אילו שורות הן מאפיינים, ואילו כללים ({ }) קיימים ובאילו שורות
+    function parseCSS(text) {
       const clean = text.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, m => m.replace(/[^\n]/g, ' '));
+      const lines = clean.split('\n');
+      const decl = [], rules = [], stack = [];
       let depth = 0;
-      return clean.split('\n').map(ln => {
-        const isDecl = depth > 0 && /^[-a-zA-Z]+\s*:\s*[^{};]+;?$/.test(ln.trim());
-        for (const ch of ln) { if (ch === '{') depth++; else if (ch === '}') depth = Math.max(0, depth - 1); }
-        return isDecl;
+      lines.forEach((ln, i) => {
+        decl.push(depth > 0 && /^[-a-zA-Z]+\s*:\s*[^{};]+;?$/.test(ln.trim()));
+        for (const ch of ln) {
+          if (ch === '{') { stack.push(i); depth++; }
+          else if (ch === '}' && stack.length) { rules.push({ brace: stack.pop(), end: i }); depth--; }
+        }
       });
+      rules.forEach(r => {                     // סלקטור שמשתרע על כמה שורות (שורות שמסתיימות בפסיק)
+        let st = r.brace;
+        while (st > 0 && lines[st - 1].trim().endsWith(',')) st--;
+        r.start = st;
+      });
+      return { decl, rules };
+    }
+
+    // כל השורות שכבויות כרגע: שורות בודדות + כל השורות שבתוך כלל כבוי
+    function offSet() {
+      const off = new Set(disabledLines);
+      parsedCSS.rules.forEach(r => {
+        if (disabledRules.has(r.start)) for (let i = r.start; i <= r.end; i++) off.add(i);
+      });
+      return off;
     }
 
     function renderGutter() {
       const ta = document.getElementById('editor-css');
       const lh = currentFontSize * 1.6;
-      const flags = declLines(ta.value);
-      disabledLines = new Set([...disabledLines].filter(i => flags[i]));
+      parsedCSS = parseCSS(ta.value);
+      const ruleAt = new Map();
+      parsedCSS.rules.forEach(r => {
+        const prev = ruleAt.get(r.start);
+        if (!prev || r.end > prev.end) ruleAt.set(r.start, r);
+      });
+      disabledLines = new Set([...disabledLines].filter(i => parsedCSS.decl[i]));
+      disabledRules = new Set([...disabledRules].filter(i => ruleAt.has(i)));
+      // האם שורה נמצאת בתוך כלל אחר שכבוי (ואז אי אפשר לשנות אותה בנפרד)
+      const covered = (i, own) => parsedCSS.rules.some(r => disabledRules.has(r.start) && r.start !== own && i >= r.start && i <= r.end);
       let h = '';
-      flags.forEach((f, i) => {
-        if (f) h += `<label class="g-row" style="top:${20 + i * lh}px;height:${lh}px"><input type="checkbox" data-line="${i}" ${disabledLines.has(i) ? '' : 'checked'}></label>`;
+      parsedCSS.decl.forEach((isDecl, i) => {
+        const pos = `top:${20 + i * lh}px;height:${lh}px`;
+        if (ruleAt.has(i)) {
+          const cov = covered(i, i);
+          h += `<label class="g-row rule${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של הכלל כולו"><input type="checkbox" data-rule="${i}" ${disabledRules.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
+        } else if (isDecl) {
+          const cov = covered(i, -1);
+          h += `<label class="g-row${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של שורה זו"><input type="checkbox" data-line="${i}" ${disabledLines.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
+        }
       });
       const inner = document.getElementById('gutter-inner');
       inner.innerHTML = h;
@@ -818,34 +868,45 @@ body {                                  /* בוחר את כל גוף הדף */
     }
 
     document.addEventListener('change', e => {
-      if (e.target.dataset && e.target.dataset.line !== undefined) {
-        const i = +e.target.dataset.line;
-        if (e.target.checked) disabledLines.delete(i); else disabledLines.add(i);
-        triggerHighlight('css'); updatePreview();
-      }
+      const d = e.target.dataset;
+      if (!d || (d.line === undefined && d.rule === undefined)) return;
+      const isRule = d.rule !== undefined;
+      const set = isRule ? disabledRules : disabledLines;
+      const i = +(isRule ? d.rule : d.line);
+      if (e.target.checked) set.delete(i); else set.add(i);
+      renderGutter(); triggerHighlight('css'); updatePreview();
     });
 
-    function enableAllLines() { disabledLines.clear(); renderGutter(); triggerHighlight('css'); updatePreview(); }
+    function enableAllLines() {
+      disabledLines.clear(); disabledRules.clear();
+      renderGutter(); triggerHighlight('css'); updatePreview();
+    }
 
     // כשמוסיפים/מוחקים שורות בעורך, מזיזים את מספרי השורות הכבויות בהתאם
+    function shiftSet(set, c, delta) {
+      const next = new Set();
+      set.forEach(i => {
+        if (i > c - delta) next.add(i + delta);
+        else if (delta < 0 && i > c) { /* השורה נמחקה */ }
+        else next.add(i);
+      });
+      return next;
+    }
+
     function shiftDisabled() {
       const ta = document.getElementById('editor-css');
       const n = ta.value.split('\n').length, delta = n - prevCssLines;
       if (delta !== 0) {
         const c = ta.value.slice(0, ta.selectionStart).split('\n').length - 1;
-        const next = new Set();
-        disabledLines.forEach(i => {
-          if (i > c - delta) next.add(i + delta);
-          else if (delta < 0 && i > c) { /* השורה נמחקה */ }
-          else next.add(i);
-        });
-        disabledLines = next;
+        disabledLines = shiftSet(disabledLines, c, delta);
+        disabledRules = shiftSet(disabledRules, c, delta);
       }
       prevCssLines = n;
     }
 
     function cssForPreview() {
-      return document.getElementById('editor-css').value.split('\n').filter((_, i) => !disabledLines.has(i)).join('\n');
+      const off = offSet();
+      return document.getElementById('editor-css').value.split('\n').filter((_, i) => !off.has(i)).join('\n');
     }
 
     function handleInput(type) {
@@ -859,7 +920,10 @@ body {                                  /* בוחר את כל גוף הדף */
       let text = textarea.value;
       if (text.endsWith("\n")) { text += " "; }
       if (t === 'html') codeBlock.innerHTML = highlightHTML(text);
-      else codeBlock.innerHTML = highlightCSS(text).split('\n').map((l, i) => disabledLines.has(i) ? `<span class="off">${l}</span>` : l).join('\n');
+      else {
+        const off = offSet();
+        codeBlock.innerHTML = highlightCSS(text).split('\n').map((l, i) => off.has(i) ? `<span class="off">${l}</span>` : l).join('\n');
+      }
       handleScroll(t);
     }
 
