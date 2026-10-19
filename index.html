@@ -12,6 +12,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background-color: var(--bg-primary); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
     header { background-color: var(--bg-surface); border-bottom: 4px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .title-area small { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-top: 2px; }
     .title-area h1 { font-size: 1.5rem; color: var(--accent); font-weight: 800; }
     .topic-selector-area { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 550px; }
     .topic-selector-area label { font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
@@ -66,39 +67,44 @@
     .st { color: #a31515; }               /* מחרוזות - אדום כהה */
     .ar { color: #af00db; }               /* @-rules ו-!important - סגול */
 
-    iframe#preview-output { width: 100%; flex: 1; border: none; background-color: #ffffff; }
+    .pane-preview { background-color: #94a3b8; }
+    iframe#preview-output { width: 100%; max-width: 100%; align-self: center; flex: 1; border: none; background-color: #ffffff; transition: width 0.25s ease; }
+    .device-group { display: flex; gap: 6px; }
+    .dev { padding: 6px 12px; font-size: 0.9rem; }
+    .dev.active { background-color: var(--accent); border-color: var(--accent); color: #ffffff; }
     .fullscreen-preview .pane-header { font-size: 1.2rem; }
     .fullscreen-preview { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; }
   </style>
 </head>
 <body>
   <header>
-    <div class="title-area"><h1>🎓 מעבדת HTML & CSS של יוסי פרפארה</h1></div>
+    <div class="title-area"><h1>🎓 מעבדת HTML & CSS של יוסי פרפארה</h1><small>📁 התמונות נטענות מתיקיית Images שנמצאת ליד קובץ זה</small></div>
     <div class="topic-selector-area">
       <label for="topic-select">בחר נושא:</label>
       <select id="topic-select" onchange="onTopicChange(this.value)">
         <optgroup label="📂 יסודות ומבנה עיצוב">
-          <option value="animals">1. דף חיות & Box Model</option>
-          <option value="imageText">2. 🖼️ שילוב תמונה וטקסט (Flexbox)</option>
-          <option value="flexbox">3. Flexbox Layout</option>
+          <option value="animals">1. 🎯 סלקטורים ב-CSS: לפי אלמנט, class ו-id (דף חיות)</option>
+          <option value="boxModel">2. 📦 Box Model: margin, border, padding</option>
+          <option value="imageText">3. 🖼️ שילוב תמונה וטקסט (Flexbox)</option>
+          <option value="flexbox">4. Flexbox Layout</option>
         </optgroup>
         <optgroup label="✨ אפקטים, מעברים וגלריות תמונות">
-          <option value="hoverDemo">4. 🖱️ אפקט Hover פשוט (כפתור)</option>
-          <option value="focusActive">5. 🎯 אירועי עכבר ומקלדת: Focus ו-Active</option>
-          <option value="threeCards">6. 🌟 גלריית 3 כרטיסיות</option>
-          <option value="flipCard">7. Flip Card (אפקט 3D)</option>
-          <option value="page2">8. Hover Gallery (אפקטי מעבר על תמונות)</option>
+          <option value="hoverDemo">5. 🖱️ אפקט Hover פשוט (כפתור)</option>
+          <option value="focusActive">6. 🎯 אירועי עכבר ומקלדת: Focus ו-Active</option>
+          <option value="threeCards">7. 🌟 גלריית 3 כרטיסיות</option>
+          <option value="flipCard">8. Flip Card (אפקט 3D)</option>
+          <option value="page2">9. Hover Gallery (אפקטי מעבר על תמונות)</option>
         </optgroup>
         <optgroup label="🌀 אנימציות וגרדיאנטים">
-          <option value="page3">9. Infinite Animations (הקפצה והבהוב)</option>
-          <option value="page4">10. Animated Gradient Background</option>
-          <option value="page6">11. Parallax Hero Section</option>
+          <option value="page3">10. Infinite Animations (הקפצה והבהוב)</option>
+          <option value="page4">11. Animated Gradient Background</option>
+          <option value="page6">12. Parallax Hero Section</option>
         </optgroup>
         <optgroup label="🧩 טפסים, מבנה ו-Bootstrap (הכנה ל-Razor Pages)">
-          <option value="formFields">12. 📝 שדות טופס (input, select, radio...)</option>
-          <option value="layoutPage">13. 🏗️ מבנה דף כמו ב-Layout</option>
-          <option value="dataTable">14. 📊 טבלת נתונים מעוצבת</option>
-          <option value="bootstrapCards">15. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
+          <option value="formFields">13. 📝 שדות טופס (input, select, radio...)</option>
+          <option value="layoutPage">14. 🏗️ מבנה דף כמו ב-Layout</option>
+          <option value="dataTable">15. 📊 טבלת נתונים מעוצבת</option>
+          <option value="bootstrapCards">16. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
         </optgroup>
       </select>
     </div>
@@ -106,6 +112,7 @@
       <button class="btn-control btn-save" onclick="saveToFile()">💾 הורד קובץ</button>
       <button class="btn-control" onclick="adjustFontSize(2)">🔍 +פונט</button>
       <button class="btn-control" onclick="adjustFontSize(-2)">🔍 -פונט</button>
+      <button class="btn-control" id="btn-comments" onclick="toggleComments()" title="מציג את הקוד בלי ההערות">🧹 הסתר הערות</button>
       <button class="btn-control" onclick="resetCurrentCode()">🔄 איפוס</button>
     </div>
   </header>
@@ -134,6 +141,11 @@
     <section class="pane-preview" id="preview-panel">
       <div class="pane-header">
         <span>תוצאה חיה (Preview)</span>
+        <div class="device-group">
+          <button class="btn-control dev" onclick="setDevice('375px', this)">📱 נייד</button>
+          <button class="btn-control dev" onclick="setDevice('768px', this)">📋 טאבלט</button>
+          <button class="btn-control dev active" onclick="setDevice('100%', this)">💻 מחשב</button>
+        </div>
         <button class="btn-control" id="fs-btn" onclick="toggleFullscreen()">🖥️ מסך מלא</button>
       </div>
       <iframe id="preview-output"></iframe>
@@ -158,15 +170,39 @@
   </ul>
 </div>
 
-<br>
-
 <div class="card">
   <h2 id="elephant">2. פיל אפריקאי</h2>
   <p>הפיל הוא היונק היבשתי הגדול ביותר.</p>
   <ul>
     <li>תכונה ייחודית: חדק ארוך</li>
   </ul>
-</div>`,
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  שלוש דרכים לבחור אלמנט ב-CSS:
+
+  1. לפי אלמנט (שם התגית):  h1, p, a, body
+     משפיע על כל האלמנטים מהסוג הזה בדף.
+  2. לפי class (נקודה):  .card
+     משפיע על כל מי שכתוב לו class="card". אפשר להשתמש בו שוב ושוב.
+  3. לפי id (סולמית):  #lion
+     משפיע על אלמנט אחד בלבד. ה-id חייב להיות ייחודי בדף.
+
+  כשכמה כללים מתנגשים: id חזק מ-class, ו-class חזק משם אלמנט.
+  .card h2 = בחירה לפי "מי בתוך מי": רק h2 שנמצא בתוך card.
+
+  עוד תגיות: hr = קו מפריד (בודדת), p = פסקה, ul = רשימה,
+  li = פריט ברשימה, div = קופסה כללית.
+  a href="#lion" = קישור לתוך אותו דף: קופץ לאלמנט שה-id שלו lion.
+
+  ===== נסו בעצמכם =====
+  1. שנו את צבע ה-h1 וראו שמשתנה אלמנט אחד.
+  2. שנו את border-radius ב-.card וראו ששני הכרטיסים משתנים.
+  3. כבו את הכלל #lion וראו שהכותרת חוזרת לצבע של .card h2.
+  4. הוסיפו class="card" לפסקה בראש הדף וראו מה קורה.
+--\>`,
         css: `/* עיצוב גוף הדף */
 body {                                  /* בוחר את כל גוף הדף */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
@@ -208,6 +244,71 @@ a {                                     /* בוחר את כל הקישורים *
   margin-top: 8px;                      /* מרווח חיצוני מעל הרשימה */
   margin-right: 20px;                   /* הזחה מימין (הדף בעברית) */
   color: #475569;                       /* צבע אפור לטקסט הרשימה */
+}
+
+/* לפי id: משפיע רק על האלמנט שה-id שלו הוא lion */
+#lion {                                 /* בוחר לפי id (סולמית #) */
+  color: #b45309;                       /* כותרת האריה בצבע חום-כתום (גובר על .card h2) */
+}`
+      },
+
+      boxModel: {
+        html: `<div class="margin-area">
+  <div class="demo-box">
+    <div class="demo-content">content</div>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  כל אלמנט ב-HTML הוא קופסה בת ארבע שכבות, מבפנים החוצה:
+
+  content = התוכן עצמו (כחול).
+  padding = רווח בין התוכן למסגרת, בתוך הקופסה (ירוק).
+  border  = המסגרת (כתום כהה).
+  margin  = רווח בין הקופסה לאלמנטים שסביבה, מחוץ לקופסה (כתום בהיר).
+
+  ההבדל החשוב: padding הוא בתוך המסגרת וצבע הרקע מתפשט אליו,
+  ו-margin הוא מחוץ למסגרת והוא תמיד שקוף.
+
+  קיצור: margin: 10px 20px = 10 למעלה ולמטה, 20 לימין ולשמאל.
+  ארבעה ערכים: למעלה, ימין, למטה, שמאל (עם כיוון השעון).
+
+  margin-area = אזור עזר צבוע בכתום בהיר, כדי שיהיה אפשר לראות את ה-margin.
+  display: flow-root = מונע מה-margin של הילד "לברוח" מחוץ לאזור.
+
+  טיפ: בדפדפן, לחיצה על F12 ובחירת אלמנט מציגה את אותו תרשים
+  של ארבע השכבות, עם המספרים האמיתיים.
+
+  ===== נסו בעצמכם =====
+  1. שנו את padding מ-20px ל-50px ועקבו אחרי האזור הירוק.
+  2. כבו את שורת margin וראו מה קורה לאזור הכתום הבהיר.
+  3. שנו את border ל-30px dashed red.
+  4. כתבו margin: 10px 60px (שני ערכים) וראו מה השתנה.
+--\>`,
+        css: `body {                                  /* כל גוף הדף */
+  font-family: Arial, sans-serif;       /* גופן קריא */
+  padding: 20px;                        /* מרווח פנימי מהשוליים */
+}
+
+.margin-area {                          /* אזור עזר שמראה את ה-margin */
+  background: #fed7aa;                  /* רקע כתום בהיר */
+  display: flow-root;                   /* מונע מה-margin של הילד "לברוח" מחוץ לאזור */
+}
+
+.demo-box {                             /* האלמנט שעליו מדגימים */
+  margin: 20px;                         /* margin: רווח חיצוני (הכתום הבהיר) */
+  border: 10px solid #f59e0b;           /* border: מסגרת (הכתום הכהה) */
+  padding: 20px;                        /* padding: רווח פנימי (הירוק) */
+  background: #bbf7d0;                  /* צבע הרקע של אזור ה-padding */
+}
+
+.demo-content {                         /* התוכן עצמו */
+  background: #93c5fd;                  /* כחול: ה-content */
+  text-align: center;                   /* מרכוז הטקסט */
+  height: 40px;                         /* גובה התוכן */
+  line-height: 40px;                    /* מרכוז אנכי של הטקסט בתוך הגובה */
 }`
       },
 
@@ -215,7 +316,25 @@ a {                                     /* בוחר את כל הקישורים *
         html: `<div class="image-text-container">
   <img src="Images/nature.jpg" alt="דוגמה">
   <p>זהו טקסט המופיע לצד התמונה... Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-</div>`,
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  div class="image-text-container" = מכולה שמחזיקה תמונה וטקסט.
+  img = תמונה (תגית בודדת).
+    src = הנתיב לקובץ. Images/nature.jpg = קובץ בתיקיית Images.
+    alt = טקסט חלופי: מוצג כשהתמונה לא נטענת, וקורא המסך מקריא אותו.
+  p = פסקת הטקסט.
+
+  @media (ב-CSS) = כללים שפועלים רק בתנאי. כאן: במסך ברוחב עד 600px
+  התמונה עוברת מעל הטקסט. לחצו על "נייד" מעל התצוגה החיה כדי לראות.
+
+  ===== נסו בעצמכם =====
+  1. שנו align-items ל-flex-start וראו איפה הטקסט עומד.
+  2. שנו את 600px ל-900px בתוך ה-@media.
+  3. שנו את gap ל-60px.
+--\>`,
         css: `/* עיצוב גוף הדף */
 body {                                  /* בוחר את כל גוף הדף */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
@@ -249,6 +368,16 @@ body {                                  /* בוחר את כל גוף הדף */
   font-size: 18px;                      /* גודל טקסט נוח לקריאה */
   line-height: 1.7;                     /* ריווח שורות נדיב */
   color: #334155;                       /* צבע אפור כהה */
+}
+
+/* במסך צר: התמונה עוברת מעל הטקסט */
+@media (max-width: 600px) {             /* הכללים שבפנים פועלים כשרוחב החלון עד 600 פיקסלים */
+  .image-text-container {               /* המכולה במסך צר */
+    flex-direction: column;             /* סידור בטור במקום בשורה */
+  }
+  .image-text-container img {           /* התמונה במסך צר */
+    width: 100%;                        /* התמונה ממלאת את כל הרוחב */
+  }
 }`
       },
 
@@ -257,7 +386,33 @@ body {                                  /* בוחר את כל גוף הדף */
   <div class="item">1</div>
   <div class="item">2</div>
   <div class="item">3</div>
-</div>`,
+  <div class="item">4</div>
+  <div class="item">5</div>
+  <div class="item">6</div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  div class="container" = המכולה (ה"אבא").
+  div class="item" = התיבות שבתוכה (ה"ילדים").
+
+  Flexbox מגדירים על האבא: display: flex מסדר את הילדים בשורה.
+  יש שני צירים: ציר ראשי (כיוון הסידור) וציר צולב (מאונך אליו).
+  justify-content = יישור לאורך הציר הראשי.
+  align-items     = יישור לאורך הציר הצולב.
+  flex-wrap       = מה קורה כשאין מקום: nowrap (ברירת מחדל) משאיר הכול
+                    בשורה אחת, ו-wrap מוריד תיבות לשורה הבאה.
+
+  ===== נסו בעצמכם =====
+  1. שנו flex-direction ל-column. הצירים מתחלפים:
+     עכשיו justify-content פועל אנכית ו-align-items אופקית.
+  2. נסו כל ערך של justify-content.
+  3. כבו את height: 80vh ועקבו אחרי align-items.
+  4. כבו את flex-wrap וראו שהתיבות גולשות מחוץ למכולה.
+     אחר כך לחצו על "נייד" מעל התצוגה החיה.
+  5. מחקו כמה תיבות מה-HTML וראו מה קורה כשיש מקום.
+--\>`,
         css: `/* עיצוב גוף הדף */
 body {                                  /* בוחר את כל גוף הדף */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
@@ -268,8 +423,10 @@ body {                                  /* בוחר את כל גוף הדף */
 
 .container {                            /* המכולה של התיבות */
   display: flex;                        /* הפיכת המכולה ל-Flexbox */
-  justify-content: space-around;        /* פיזור התיבות לאורך השורה עם רווחים שווים */
-  align-items: center;                  /* יישור אנכי של התיבות למרכז */
+  flex-direction: row;                  /* כיוון הציר הראשי: row | column | row-reverse | column-reverse */
+  flex-wrap: wrap;                      /* כשאין מקום, תיבות יורדות לשורה הבאה: nowrap | wrap | wrap-reverse */
+  justify-content: space-around;        /* לאורך הציר הראשי: flex-start | center | flex-end | space-between | space-around */
+  align-items: center;                  /* לאורך הציר הצולב: flex-start | center | flex-end | stretch */
   background-color: #f1f5f9;            /* רקע אפור בהיר להדגשת האזור */
   padding: 20px;                        /* מרווח פנימי */
   border-radius: 10px;                  /* עיגול פינות */
@@ -281,6 +438,9 @@ body {                                  /* בוחר את כל גוף הדף */
   background-color: #0ea5e9;            /* רקע תכלת */
   color: white;                         /* טקסט לבן */
   padding: 20px 30px;                   /* מרווח פנימי: 20 למעלה/למטה, 30 לצדדים */
+  width: 150px;                         /* רוחב קבוע לכל תיבה */
+  flex-shrink: 0;                       /* התיבה לא מתכווצת כשחסר מקום (לכן צריך wrap) */
+  text-align: center;                   /* מרכוז המספר בתוך התיבה */
   font-size: 22px;                      /* גודל הטקסט */
   font-weight: bold;                    /* כתב מודגש */
   border-radius: 8px;                   /* עיגול פינות */
@@ -288,7 +448,25 @@ body {                                  /* בוחר את כל גוף הדף */
       },
 
       hoverDemo: {
-        html: `<button class="my-btn">העבר עליי עכבר</button>`,
+        html: `<button class="my-btn">העבר עליי עכבר</button>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  button = כפתור.
+  class="my-btn" = שם שמחבר את הכפתור לעיצוב ב-CSS.
+
+  :hover הוא "מחלקת-משנה" (pseudo-class): מצב מיוחד של אלמנט.
+  אין צורך לשנות את ה-HTML. ה-CSS מגדיר איך האלמנט נראה במצב הזה.
+  עוד מצבים כאלה: :focus ו-:active (בדוגמה הבאה), :disabled ועוד.
+
+  transition = גורם לשינוי להיות חלק. בלעדיו הוא היה מיידי.
+
+  ===== נסו בעצמכם =====
+  1. שנו את scale(1.1) ל-scale(1.5).
+  2. כבו את transition וראו את ההבדל.
+  3. שנו את 0.3s ל-2s.
+--\>`,
         css: `/* עיצוב גוף הדף במרכז */
 body {                                  /* בוחר את כל גוף הדף */
   display: flex;                        /* הפעלת Flexbox על הדף */
@@ -355,6 +533,12 @@ body {                                  /* בוחר את כל גוף הדף */
     class="btn" = חיבור הכפתור לעיצוב .btn שב-CSS.
 
   p = פסקה. כאן היא רק יוצרת רווח בין האלמנטים.
+
+  ===== נסו בעצמכם =====
+  1. שנו את צבע ה-box-shadow ב-input:focus לירוק.
+  2. ב-.btn:active שנו translateY(5px) ל-12px.
+  3. הוסיפו כלל .btn:hover עם צבע רקע אחר.
+  4. מחקו את name="search" ובדקו מה נשלח.
 --\>`,
         css: `body {                                      /* כל גוף הדף */
   font-family: Arial, sans-serif;           /* גופן קריא */
@@ -423,7 +607,24 @@ input:focus {                               /* שדה הקלט כשלחצו על
     </div>
 
   </div>
-</div>`,
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  h2, h3 = כותרות. p = פסקה.
+  img = תמונה. src = נתיב הקובץ, alt = טקסט חלופי.
+  a href="#" = קישור. הסימן # מציין "אין יעד" (משמש כמקום שמור).
+  class = שם לעיצוב. modern-card נמצא על כל כרטיסייה,
+          ולכן כל שינוי ב-CSS משפיע על שלושתן יחד.
+  שימו לב: ה-HTML חוזר על אותו מבנה שלוש פעמים,
+  ובדף Razor אפשר לכתוב אותו פעם אחת בתוך foreach.
+
+  ===== נסו בעצמכם =====
+  1. שנו flex: 1 1 220px ל-1 1 150px ועקבו אחרי הכרטיסיות.
+  2. שנו translateY(-6px) ל-translateY(-20px).
+  3. שנו את צבע ה-.card-btn:hover.
+--\>`,
         css: `/* עיצוב כללי: חישוב רוחב כולל מסגרת ומרווח פנימי */
 * {                                     /* בוחר את כל האלמנטים בדף */
   box-sizing: border-box;               /* רוחב וגובה כוללים גם padding וגם border */
@@ -508,17 +709,40 @@ body {                                  /* בוחר את כל גוף הדף */
   text-decoration: none;                /* הסרת קו תחתון מהקישור */
   font-size: 14px;                      /* גודל טקסט */
   font-weight: bold;                    /* כתב מודגש */
+  transition: background-color 0.3s;    /* מעבר חלק לצבע הרקע */
+}
+
+.card-btn:hover {                       /* הכפתור בזמן שהעכבר מעליו */
+  background-color: #1d4ed8;            /* כחול כהה יותר */
 }`
       },
 
       flipCard: {
-        html: `<\!-- Flip Card 3D Effect עם תמונות מקומיות --\>
-<div class="flip-card">
+        html: `<div class="flip-card">
   <div class="flip-card-inner">
-    <div class="flip-card-front"></div>
-    <div class="flip-card-back"></div>
+    <div class="flip-card-front">חזית</div>
+    <div class="flip-card-back">גב</div>
   </div>
-</div>`,
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  flip-card = המסגרת החיצונית (היא נותנת את העומק, perspective).
+  flip-card-inner = המעטפת שמסתובבת.
+  flip-card-front / flip-card-back = החזית והגב של הקלף.
+
+  איך זה עובד: כשהעכבר מעל המסגרת, ה-CSS מסובב את flip-card-inner
+  ב-180 מעלות, ו-backface-visibility מסתיר את הצד שפונה אחורה.
+
+  שימו לב: בנייד אין ריחוף עכבר, ולכן ההתנהגות שם שונה
+  (נוגעים במקום לרחף).
+
+  ===== נסו בעצמכם =====
+  1. שנו rotateY ל-rotateX.
+  2. שנו את 0.8s ל-3s.
+  3. שנו perspective מ-1000px ל-200px.
+--\>`,
         css: `/* עיצוב גוף הדף במרכז */
 body {                                  /* בוחר את כל גוף הדף */
   display: flex;                        /* הפעלת Flexbox */
@@ -553,6 +777,13 @@ body {                                  /* בוחר את כל גוף הדף */
   height: 100%;                         /* ממלא את כל גובה הקלף */
   backface-visibility: hidden;          /* הסתרת הצד האחורי של כל צד בזמן הסיבוב */
   border-radius: 12px;                  /* עיגול פינות */
+  display: flex;                        /* Flexbox למרכוז הכיתוב */
+  justify-content: center;              /* מרכוז אופקי */
+  align-items: center;                  /* מרכוז אנכי */
+  color: white;                         /* טקסט לבן */
+  font-size: 28px;                      /* גודל טקסט */
+  font-weight: bold;                    /* כתב מודגש */
+  text-shadow: 0 2px 6px black;         /* צל לטקסט כדי שייקרא על התמונה */
 }
 
 .flip-card-front {                      /* חזית הקלף */
@@ -566,7 +797,7 @@ body {                                  /* בוחר את כל גוף הדף */
       },
 
       page2: {
-        html: `<h2 style="color:#fff; text-align:center; font-size:16px;">גלריית אפקטים</h2>
+        html: `<h2 class="title">גלריית אפקטים</h2>
 <div class="gallery">
   <div class="image-container">
     <img src="Images/nature.jpg" class="zoom" alt="טבע">
@@ -580,39 +811,65 @@ body {                                  /* בוחר את כל גוף הדף */
     <img src="Images/home.jpg" class="flip" alt="בית">
     <p>היפוך</p>
   </div>
-</div>`,
-        css: `/* עיצוב גוף הדף */
-body {                                  /* בוחר את כל גוף הדף */
+  <div class="image-container">
+    <img src="Images/nature.jpg" class="gray" alt="טבע">
+    <p>שחור-לבן</p>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  img = תמונה. src = נתיב הקובץ. alt = טקסט חלופי.
+  class="zoom" / "lift" / "flip" / "gray" = כל תמונה מקבלת שם משלה,
+  וב-CSS מחברים לכל שם אפקט אחר ב-:hover.
+
+  rotateY(180deg) הופך את התמונה כמו במראה (היא מסתובבת סביב הציר האנכי).
+  filter: grayscale(100%) הופך תמונה לשחור-לבן, ו-0% מחזיר את הצבע.
+  transition על ה-img גורם לכל האפקטים להיות חלקים.
+
+  ===== נסו בעצמכם =====
+  1. שנו scale(1.1) ל-scale(1.5).
+  2. הוסיפו אפקט rotate(10deg) לתמונה אחת.
+  3. שנו grayscale(100%) ל-sepia(100%).
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
   background: #0f172a;                  /* רקע כחול כהה מאוד */
   padding: 20px;                        /* מרווח פנימי מהשוליים */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
   text-align: center;                   /* מרכוז הטקסט */
 }
 
+.title {                                /* הכותרת */
+  color: white;                         /* טקסט לבן */
+  font-size: 28px;                      /* גודל הכותרת */
+}
+
 .gallery {                              /* המכולה של התמונות */
   display: flex;                        /* סידור התמונות בשורה */
-  gap: 15px;                            /* מרווח בין התמונות */
+  flex-wrap: wrap;                      /* אם אין מקום, תמונה יורדת לשורה הבאה */
+  gap: 20px;                            /* מרווח בין התמונות */
   justify-content: center;              /* מרכוז השורה */
-  margin-top: 15px;                     /* מרווח חיצוני מעל הגלריה */
+  margin-top: 25px;                     /* מרווח חיצוני מעל הגלריה */
 }
 
 .image-container {                      /* מסגרת לבנה סביב כל תמונה */
   background: white;                    /* רקע לבן */
-  padding: 8px;                         /* מרווח פנימי */
-  border-radius: 6px;                   /* עיגול פינות */
-  width: 110px;                         /* רוחב קבוע */
+  padding: 10px;                        /* מרווח פנימי */
+  border-radius: 8px;                   /* עיגול פינות */
+  width: 170px;                         /* רוחב קבוע */
 }
 
 .image-container img {                  /* התמונות בתוך המסגרת */
   width: 100%;                          /* התמונה ממלאת את רוחב המסגרת */
-  height: 70px;                         /* גובה קבוע */
+  height: 120px;                        /* גובה קבוע */
   object-fit: cover;                    /* חיתוך התמונה בלי למתוח אותה */
   transition: 0.3s;                     /* מעבר חלק לכל שינוי (0.3 שניות) */
 }
 
 .image-container p {                    /* הכיתוב מתחת לתמונה */
-  font-size: 12px;                      /* גודל טקסט קטן */
-  margin-top: 5px;                      /* מרווח חיצוני מעל הכיתוב */
+  font-size: 18px;                      /* גודל טקסט קריא */
+  margin-top: 8px;                      /* מרווח חיצוני מעל הכיתוב */
 }
 
 .zoom:hover {                           /* תמונה עם class בשם zoom בזמן ריחוף */
@@ -620,23 +877,49 @@ body {                                  /* בוחר את כל גוף הדף */
 }
 
 .lift:hover {                           /* תמונה עם class בשם lift בזמן ריחוף */
-  transform: translateY(-5px);          /* הזזה 5 פיקסלים כלפי מעלה */
+  transform: translateY(-8px);          /* הזזה 8 פיקסלים כלפי מעלה */
 }
 
 .flip:hover {                           /* תמונה עם class בשם flip בזמן ריחוף */
-  transform: rotateY(180deg);           /* היפוך של התמונה סביב הציר האנכי */
+  transform: rotateY(180deg);           /* היפוך סביב הציר האנכי (כמו מראה) */
+}
+
+.gray {                                 /* תמונה עם class בשם gray במצב רגיל */
+  filter: grayscale(100%);              /* שחור-לבן */
+}
+
+.gray:hover {                           /* אותה תמונה בזמן ריחוף */
+  filter: grayscale(0%);                /* חזרה לצבע מלא */
 }`
       },
 
       page3: {
-        html: `<h2 style="color:#fff; text-align:center;">אפקטים אינסופיים</h2>
+        html: `<h2 class="title">אפקטים אינסופיים</h2>
 <div class="gallery">
   <div class="demo-box bounce">Bounce</div>
   <div class="demo-box blink">Blink</div>
   <div class="demo-box pulse">Pulse</div>
-</div>`,
-        css: `/* עיצוב גוף הדף */
-body {                                  /* בוחר את כל גוף הדף */
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  לכל תיבה יש שני class: demo-box (העיצוב המשותף)
+  ועוד אחד שקובע את האנימציה (bounce / blink / pulse).
+
+  animation: שם משך infinite תנועה
+    שם = שם ה-@keyframes שמגדיר את השלבים.
+    infinite = חוזר לנצח.   alternate = הולך ושב.
+  @keyframes = שלבי האנימציה באחוזים: 0% התחלה, 100% סוף.
+  animation-delay = השהיה לפני ההתחלה (כך התיבות לא זזות בסנכרון).
+  animation-play-state: paused = עוצר את האנימציה. כאן ב-:hover.
+
+  ===== נסו בעצמכם =====
+  1. שנו את 1.5s ב-.bounce ל-0.5s.
+  2. שנו translateY(-25px) ל-translateY(-60px).
+  3. הוסיפו אנימציית rotate שמסתובבת 360 מעלות.
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
   background: #0f172a;                  /* רקע כחול כהה מאוד */
   color: white;                         /* טקסט לבן */
   padding: 20px;                        /* מרווח פנימי מהשוליים */
@@ -644,84 +927,129 @@ body {                                  /* בוחר את כל גוף הדף */
   text-align: center;                   /* מרכוז הטקסט */
 }
 
+.title {                                /* הכותרת */
+  font-size: 28px;                      /* גודל הכותרת */
+}
+
 .gallery {                              /* המכולה של שלוש התיבות */
   display: flex;                        /* סידור בשורה */
-  gap: 20px;                            /* מרווח בין התיבות */
+  gap: 30px;                            /* מרווח בין התיבות */
   justify-content: center;              /* מרכוז השורה */
-  margin-top: 20px;                     /* מרווח חיצוני מעל */
+  margin-top: 60px;                     /* מרווח חיצוני מעל (יש מקום לקפיצה) */
 }
 
 .demo-box {                             /* עיצוב משותף לכל התיבות */
-  width: 80px;                          /* רוחב התיבה */
-  height: 80px;                         /* גובה התיבה */
+  width: 110px;                         /* רוחב התיבה */
+  height: 110px;                        /* גובה התיבה */
   background: #2563eb;                  /* רקע כחול */
-  border-radius: 8px;                   /* עיגול פינות */
+  border-radius: 12px;                  /* עיגול פינות */
   display: flex;                        /* Flexbox למרכוז הטקסט */
   justify-content: center;              /* מרכוז אופקי של הטקסט */
   align-items: center;                  /* מרכוז אנכי של הטקסט */
-  font-size: 12px;                      /* גודל טקסט */
+  font-size: 20px;                      /* גודל טקסט */
   font-weight: bold;                    /* כתב מודגש */
 }
 
-.bounce {                               /* התיבה המקפצת */
-  animation: bounce 1.5s infinite ease-in-out; /* שם האנימציה, משך, חזרה אינסופית ותנועה חלקה */
+.demo-box:hover {                       /* תיבה בזמן שהעכבר מעליה */
+  animation-play-state: paused;         /* עצירת האנימציה בזמן הריחוף */
 }
 
-@keyframes bounce {                     /* הגדרת שלבי אנימציית ההקפצה */
+.bounce {                               /* התיבה המקפצת */
+  animation: bounce 1.5s infinite ease-in-out;/* שם, משך, חזרה אינסופית ותנועה חלקה */
+}
+
+@keyframes bounce {                     /* שלבי אנימציית ההקפצה */
   0%, 100% {                            /* בתחילת האנימציה ובסופה */
     transform: translateY(0);           /* התיבה במקומה */
   }
   50% {                                 /* באמצע האנימציה */
-    transform: translateY(-10px);       /* התיבה למעלה ב-10 פיקסלים */
+    transform: translateY(-25px);       /* התיבה למעלה ב-25 פיקסלים */
   }
 }
 
 .blink {                                /* התיבה המהבהבת */
-  animation: blink 1s infinite alternate; /* חוזרת לנצח, הולכת ושבה (alternate) */
+  animation: blink 1s infinite alternate;/* חוזרת לנצח, הולכת ושבה (alternate) */
+  animation-delay: 0.3s;                /* התחלה מושהית ב-0.3 שניות */
 }
 
-@keyframes blink {                      /* הגדרת שלבי אנימציית ההבהוב */
+@keyframes blink {                      /* שלבי אנימציית ההבהוב */
   0% {                                  /* תחילת האנימציה */
-    opacity: 1;                         /* שקיפות מלאה (נראה לגמרי) */
+    opacity: 1;                         /* נראה לגמרי */
   }
   100% {                                /* סוף האנימציה */
-    opacity: 0.3;                       /* כמעט שקוף */
+    opacity: 0.2;                       /* כמעט שקוף */
   }
 }
 
 .pulse {                                /* התיבה הפועמת */
-  animation: pulse 1.2s infinite ease-in-out; /* אנימציה אינסופית וחלקה */
+  animation: pulse 1.2s infinite ease-in-out;/* אנימציה אינסופית וחלקה */
+  animation-delay: 0.6s;                /* התחלה מושהית ב-0.6 שניות */
 }
 
-@keyframes pulse {                      /* הגדרת שלבי אנימציית הפעימה */
+@keyframes pulse {                      /* שלבי אנימציית הפעימה */
   0% {                                  /* תחילת האנימציה */
-    transform: scale(0.9);              /* התיבה מוקטנת מעט */
+    transform: scale(0.85);             /* מוקטנת */
   }
   50% {                                 /* אמצע האנימציה */
-    transform: scale(1.05);             /* התיבה מוגדלת מעט */
+    transform: scale(1.1);              /* מוגדלת */
   }
   100% {                                /* סוף האנימציה */
-    transform: scale(0.9);              /* חוזרת לגודל המוקטן */
+    transform: scale(0.85);             /* חוזרת לגודל המוקטן */
   }
 }`
       },
 
       page4: {
-        html: `<h2 style="color: #fff; text-align:center;">אנימציית גרדיאנט</h2>`,
-        css: `/* עיצוב גוף הדף עם אנימציית גרדיאנט */
-body {                                  /* בוחר את כל גוף הדף */
+        html: `<div class="glass">
+  <h2>אנימציית גרדיאנט</h2>
+  <p>הכרטיס שקוף למחצה ומטשטש את הרקע שמאחוריו.</p>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  div class="glass" = כרטיס שיושב מעל הרקע המונפש.
+  h2 = כותרת, p = פסקה.
+
+  linear-gradient = מעבר בין כמה צבעים. הערך הראשון קובע את הכיוון.
+  background-size: 500% = הרקע גדול פי 5 מהדף, כדי שיהיה מה להזיז.
+  @keyframes gradientBG = מזיז את background-position
+  מצד לצד, וכך נראה שהצבעים זורמים.
+
+  rgba(255, 255, 255, 0.2) = לבן עם שקיפות 20% (המספר האחרון).
+  backdrop-filter: blur = מטשטש את מה שנמצא מאחורי הכרטיס.
+
+  ===== נסו בעצמכם =====
+  1. כבו את background-size וראו שהאנימציה נעלמת.
+  2. שנו את 5s ל-1s.
+  3. שנו blur(10px) ל-blur(0px) ול-blur(30px).
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
   height: 80vh;                         /* גובה של 80% מגובה החלון */
   display: flex;                        /* הפעלת Flexbox */
-  justify-content: center;              /* מרכוז אופקי של הכותרת */
-  align-items: center;                  /* מרכוז אנכי של הכותרת */
-  background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #ff8800); /* מעבר בין 4 צבעים באלכסון */
+  justify-content: center;              /* מרכוז אופקי של הכרטיס */
+  align-items: center;                  /* מרכוז אנכי של הכרטיס */
+  background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #ff8800);/* מעבר בין 4 צבעים באלכסון */
   background-size: 500% 500%;           /* הרקע גדול פי 5 מהדף כדי שיהיה מה להזיז */
-  animation: gradientBG 5s ease infinite; /* הפעלת האנימציה: 5 שניות, חזרה אינסופית */
+  animation: gradientBG 5s ease infinite;/* האנימציה: 5 שניות, חזרה אינסופית */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
   color: white;                         /* טקסט לבן */
 }
 
-@keyframes gradientBG {                 /* הגדרת שלבי האנימציה */
+.glass {                                /* כרטיס "זכוכית" מעל הרקע */
+  background: rgba(255, 255, 255, 0.2); /* לבן שקוף למחצה */
+  backdrop-filter: blur(10px);          /* טשטוש הרקע שמאחורי הכרטיס */
+  padding: 30px 40px;                   /* מרווח פנימי */
+  border-radius: 16px;                  /* עיגול פינות */
+  border: 1px solid rgba(255, 255, 255, 0.5);/* מסגרת דקה ושקופה */
+  text-align: center;                   /* מרכוז הטקסט */
+}
+
+.glass h2 {                             /* הכותרת בתוך הכרטיס */
+  margin: 0 0 8px;                      /* בלי מרווח מעל, 8 פיקסלים מתחת */
+}
+
+@keyframes gradientBG {                 /* שלבי האנימציה */
   0% {                                  /* תחילת האנימציה */
     background-position: 0% 50%;        /* הרקע בקצה אחד */
   }
@@ -735,31 +1063,68 @@ body {                                  /* בוחר את כל גוף הדף */
       },
 
       page6: {
-        html: `<section class="hero"><h1>Parallax</h1></section>
+        html: `<section class="hero">
+  <h1>Parallax</h1>
+</section>
+
 <section class="content">
   <h2>תוכן גלילה</h2>
-  <p>גלול מטה...</p>
-  <div style="height: 300px;"></div>
-</section>`,
-        css: `/* עיצוב גוף הדף */
-body {                                  /* בוחר את כל גוף הדף */
+  <p>גללו מטה וראו איך התמונה נשארת במקומה והתוכן עובר מעליה.</p>
+  <div class="spacer"></div>
+</section>
+
+<section class="hero hero-two">
+  <h1>תמונה שנייה</h1>
+</section>
+
+<section class="content">
+  <h2>סוף העמוד</h2>
+  <div class="spacer"></div>
+</section>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  section = אזור לוגי בדף. כאן יש שני אזורי תמונה ושני אזורי תוכן.
+  לאזור השני יש שני class: hero (העיצוב המשותף) ו-hero-two
+  (מחליף רק את התמונה).
+  div class="spacer" = קופסה ריקה שמוסיפה גובה, כדי שיהיה מה לגלול.
+
+  הסוד של Parallax הוא המילה fixed בשורת ה-background:
+  התמונה "מקובעת" לחלון, והתוכן גולל מעליה.
+  שימו לב: בחלק מהניידים האפקט הזה לא נתמך.
+
+  ===== נסו בעצמכם =====
+  1. מחקו את המילה fixed וגללו שוב.
+  2. שנו את 0.4 ב-rgba לערך 0.8 (שכבה כהה יותר).
+  3. שנו את גובה ה-.hero מ-50vh ל-80vh.
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
   margin: 0;                            /* הסרת השוליים החיצוניים */
   font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
 }
 
-.hero {                                 /* אזור הפתיחה עם התמונה הגדולה */
-  height: 40vh;                         /* גובה של 40% מגובה החלון */
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/nature.jpg') center/cover fixed; /* שכבה כהה מעל תמונה קבועה (fixed) = אפקט Parallax */
+.hero {                                 /* אזור התמונה הגדולה */
+  height: 50vh;                         /* גובה של 50% מגובה החלון */
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/nature.jpg') center/cover fixed;/* שכבה כהה מעל תמונה קבועה (fixed) = Parallax */
   display: flex;                        /* הפעלת Flexbox */
   justify-content: center;              /* מרכוז אופקי של הכותרת */
   align-items: center;                  /* מרכוז אנכי של הכותרת */
   color: white;                         /* טקסט לבן */
 }
 
+.hero-two {                             /* האזור השני (שומר על שאר הכללים של hero) */
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('Images/mountain.jpg') center/cover fixed;/* תמונה אחרת, אותו אפקט */
+}
+
 .content {                              /* אזור התוכן שגולל מעל התמונה */
   padding: 20px;                        /* מרווח פנימי */
   background: #0f172a;                  /* רקע כחול כהה */
   color: #fff;                          /* טקסט לבן */
+}
+
+.spacer {                               /* קופסה ריקה שמוסיפה גובה */
+  height: 300px;                        /* גובה 300 פיקסלים */
 }`
       },
 
@@ -824,6 +1189,12 @@ body {                                  /* בוחר את כל גוף הדף */
 
   שימו לב: בשליחה ב-GET הסיסמה נראית בכתובת.
   באתר אמיתי משתמשים ב-method="post" (וכך גם ב-Razor Pages).
+
+  ===== נסו בעצמכם =====
+  1. הוסיפו required לשדה הסיסמה ונסו לשלוח בלי למלא אותו.
+  2. שנו type="number" ל-type="text" וראו מה משתנה.
+  3. הוסיפו option רביעי ל-select.
+  4. מחקו את name משדה city ובדקו שהעיר לא נשלחה.
 --\>`,
         css: `body {                                      /* כל גוף הדף */
   font-family: Arial, sans-serif;           /* גופן קריא */
@@ -909,6 +1280,11 @@ label {                                     /* כל התוויות */
   ה-CSS משתמש ב-Grid לפריסה:
   שלוש שורות: header בגובה התוכן, main תופס את כל השאר,
   ו-footer בגובה התוכן, ולכן ה-footer תמיד נשאר בתחתית.
+
+  ===== נסו בעצמכם =====
+  1. הוסיפו כמה פסקאות ב-main וראו שה-footer נשאר בתחתית.
+  2. הוסיפו קישור רביעי ל-nav.
+  3. שנו justify-content ב-header ל-flex-start.
 --\>`,
         css: `body {                                      /* כל גוף הדף */
   margin: 0;                                /* הסרת השוליים של הדף */
@@ -991,6 +1367,12 @@ footer {                                    /* תחתית הדף */
   ב-CSS: border-collapse מאחד את המסגרות של התאים,
   :nth-child(even) צובע כל שורה זוגית, ו-:hover מדגיש את השורה
   שהעכבר נמצא עליה.
+
+  ===== נסו בעצמכם =====
+  1. שנו even ל-odd.
+  2. הוסיפו שורה חדשה לטבלה.
+  3. שנו את צבע ה-hover.
+  4. הוסיפו text-align: center לכללי ה-th.
 --\>`,
         css: `body {                                      /* כל גוף הדף */
   font-family: Arial, sans-serif;           /* גופן קריא */
@@ -1088,6 +1470,12 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
                המספר קובע את הגודל (0 עד 5).
 
   בלשונית CSS יש רק שלוש תוספות משלנו מעל Bootstrap.
+
+  ===== נסו בעצמכם =====
+  1. שנו col-md-4 ל-col-md-6 וספרו כמה כרטיסיות יש בשורה.
+  2. שנו btn-primary ל-btn-success או btn-danger.
+  3. לחצו על "נייד" מעל התצוגה החיה.
+  4. הוסיפו כרטיסייה רביעית וראו מה קורה לשורה.
 --\>`,
         css: `/* Bootstrap מעצב את רוב הדף. אלה התוספות שלנו */
 
@@ -1205,6 +1593,7 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
 
     function onTopicChange(key) {
       const topic = defaultTopics[key] || defaultTopics.animals;
+      cleanStash = null; document.getElementById('btn-comments').textContent = '🧹 הסתר הערות';
       document.getElementById('editor-html').value = topic.html;
       document.getElementById('editor-css').value = topic.css;
       disabledLines.clear(); disabledRules.clear();
@@ -1372,6 +1761,39 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
         el.style.fontSize = currentFontSize + 'px';
       });
       renderGutter();
+    }
+
+    /* ===== תצוגה במכשירים שונים ===== */
+    function setDevice(width, btn) {
+      document.getElementById('preview-output').style.width = width;
+      document.querySelectorAll('.dev').forEach(b => b.classList.toggle('active', b === btn));
+    }
+
+    /* ===== הסתרת הערות (קוד נקי להצגה בכיתה) ===== */
+    let cleanStash = null;
+    function stripCssComments(t) {
+      const noC = l => l.replace(/\/\*[\s\S]*?\*\//g, '');
+      return t.split('\n').filter(l => !(l.includes('/*') && noC(l).trim() === '')).map(l => noC(l).trimEnd()).join('\n');
+    }
+    function stripHtmlComments(t) {
+      return t.replace(new RegExp(CMT_OPEN + '[\\s\\S]*?' + CMT_CLOSE, 'g'), '').replace(/\n{3,}/g, '\n\n').trim();
+    }
+    function toggleComments() {
+      const h = document.getElementById('editor-html'), c = document.getElementById('editor-css');
+      const b = document.getElementById('btn-comments');
+      if (!cleanStash) {
+        cleanStash = { html: h.value, css: c.value };
+        h.value = stripHtmlComments(h.value); c.value = stripCssComments(c.value);
+        b.textContent = '💬 הצג הערות';
+      } else {
+        const edited = h.value !== stripHtmlComments(cleanStash.html) || c.value !== stripCssComments(cleanStash.css);
+        if (edited && !confirm('בוצעו שינויים בקוד בזמן שההערות היו מוסתרות. החזרת ההערות תמחק אותם. להמשיך?')) return;
+        h.value = cleanStash.html; c.value = cleanStash.css; cleanStash = null;
+        b.textContent = '🧹 הסתר הערות';
+      }
+      disabledLines.clear(); disabledRules.clear();
+      prevCssLines = c.value.split('\n').length;
+      renderGutter(); triggerHighlight('html'); triggerHighlight('css'); updatePreview();
     }
 
     function resetCurrentCode() { onTopicChange(document.getElementById('topic-select').value); }
