@@ -8,6 +8,7 @@
     :root {
       --bg-primary: #cbd5e1; --bg-surface: #f8fafc; --border-color: #475569;
       --text-main: #0f172a; --accent: #1d4ed8; --editor-font-size: 18px;
+      --editor-lh: 29px;   /* גובה שורה בפיקסלים שלמים: מונע סטייה מצטברת בין העורך לצבעי הקוד */
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background-color: var(--bg-primary); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -34,16 +35,21 @@
     textarea.code-editor, .highlight-layer {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; padding: 20px;
       font-family: 'Consolas', 'Courier New', monospace; font-size: var(--editor-font-size);
-      line-height: 1.6; white-space: pre; tab-size: 2; box-sizing: border-box; font-weight: 600;
+      line-height: var(--editor-lh); white-space: pre; tab-size: 2; box-sizing: border-box; font-weight: 600;
       border: none; letter-spacing: 0; direction: ltr; text-align: left;
+      word-spacing: 0; text-indent: 0; text-transform: none; text-rendering: auto;
+      font-variant-ligatures: none; font-kerning: none; font-synthesis: none;
+      -webkit-text-size-adjust: none; text-size-adjust: none;
+      -webkit-appearance: none; appearance: none; border-radius: 0;
     }
     textarea.code-editor { background: transparent; color: transparent; caret-color: #000000; resize: none; outline: none; z-index: 2; overflow: auto; }
     textarea.code-editor::selection { background: rgba(29, 78, 216, 0.25); }
     .highlight-layer { z-index: 1; background-color: #ffffff; pointer-events: none; overflow: hidden; }
-    .highlight-layer code { font: inherit; display: block; }
+    /* הגלילה של שכבת הצבעים נעשית ב-transform (לא ב-scrollTop), כדי שתמיד תהיה זהה לגלילת תיבת הטקסט */
+    .highlight-layer code { font: inherit; letter-spacing: inherit; display: block; width: max-content; min-width: 100%; will-change: transform; }
 
     /* ===== עמודת תיבות הסימון (checkbox) לצד קוד ה-CSS ===== */
-    #wrapper-css textarea.code-editor, #wrapper-css .highlight-layer { left: 52px; width: calc(100% - 52px); }
+    #wrapper-html textarea.code-editor, #wrapper-html .highlight-layer, #wrapper-css textarea.code-editor, #wrapper-css .highlight-layer { left: 52px; width: calc(100% - 52px); }
     .gutter { position: absolute; top: 0; left: 0; bottom: 0; width: 52px; background: #f1f5f9; border-right: 3px solid #cbd5e1; overflow: hidden; z-index: 3; }
     .gutter-inner { position: absolute; top: 0; left: 0; right: 0; }
     .g-row { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -54,7 +60,7 @@
     .g-row.cov { opacity: 0.35; cursor: not-allowed; }
     .g-row.cov input { cursor: not-allowed; }
     .off { background: rgba(220, 38, 38, 0.12); opacity: 0.5; text-decoration: line-through; text-decoration-color: #dc2626; }
-    #enable-all { display: none; background: #16a34a; border-color: #16a34a; color: white; }
+    #enable-all { background: #16a34a; border-color: #16a34a; color: white; }
 
     /* ===== צבעי Visual Studio Code (ערכת Light+) ===== */
     .c  { color: #008000; }               /* הערות - ירוק */
@@ -91,20 +97,23 @@
         <optgroup label="✨ אפקטים, מעברים וגלריות תמונות">
           <option value="hoverDemo">5. 🖱️ אפקט Hover פשוט (כפתור)</option>
           <option value="focusActive">6. 🎯 אירועי עכבר ומקלדת: Focus ו-Active</option>
-          <option value="threeCards">7. 🌟 גלריית 3 כרטיסיות</option>
-          <option value="flipCard">8. Flip Card (אפקט 3D)</option>
-          <option value="page2">9. Hover Gallery (אפקטי מעבר על תמונות)</option>
+          <option value="singleCard">7. 🃏 כרטיסייה אחת (עיצוב מינימלי)</option>
+          <option value="singleCardToggle">8. 🔀 כרטיסייה אחת: קרא עוד / קרא פחות</option>
+          <option value="threeCards">9. 🌟 גלריית 3 כרטיסיות (קרא עוד / קרא פחות)</option>
+          <option value="cardPages">10. 📄 כרטיסיות שמובילות לעמוד נוסף</option>
+          <option value="flipCard">11. Flip Card (אפקט 3D)</option>
+          <option value="page2">12. Hover Gallery (אפקטי מעבר על תמונות)</option>
         </optgroup>
         <optgroup label="🌀 אנימציות וגרדיאנטים">
-          <option value="page3">10. Infinite Animations (הקפצה והבהוב)</option>
-          <option value="page4">11. Animated Gradient Background</option>
-          <option value="page6">12. Parallax Hero Section</option>
+          <option value="page3">13. Infinite Animations (הקפצה והבהוב)</option>
+          <option value="page4">14. Animated Gradient Background</option>
+          <option value="page6">15. Parallax Hero Section</option>
         </optgroup>
         <optgroup label="🧩 טפסים, מבנה ו-Bootstrap (הכנה ל-Razor Pages)">
-          <option value="formFields">13. 📝 שדות טופס (input, select, radio...)</option>
-          <option value="layoutPage">14. 🏗️ מבנה דף כמו ב-Layout</option>
-          <option value="dataTable">15. 📊 טבלת נתונים מעוצבת</option>
-          <option value="bootstrapCards">16. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
+          <option value="formFields">16. 📝 שדות טופס (input, select, radio...)</option>
+          <option value="layoutPage">17. 🏗️ מבנה דף כמו ב-Layout</option>
+          <option value="dataTable">18. 📊 טבלת נתונים מעוצבת</option>
+          <option value="bootstrapCards">19. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
         </optgroup>
       </select>
     </div>
@@ -128,12 +137,13 @@
       </div>
       <div class="editor-wrapper">
         <div id="wrapper-html" style="position: absolute; width:100%; height:100%;">
-          <textarea id="editor-html" class="code-editor" spellcheck="false" oninput="handleInput('html')" onscroll="handleScroll('html')"></textarea>
+          <div class="gutter" id="html-gutter" title="סמן/בטל כדי להפעיל או לכבות שורה"><div class="gutter-inner" id="html-gutter-inner"></div></div>
+          <textarea id="editor-html" class="code-editor" spellcheck="false" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="handleInput('html')" onscroll="handleScroll('html')"></textarea>
           <pre class="highlight-layer"><code id="code-html"></code></pre>
         </div>
         <div id="wrapper-css" style="position: absolute; width:100%; height:100%; display: none;">
-          <div class="gutter" id="css-gutter" title="סמן/בטל כדי להפעיל או לכבות שורה"><div class="gutter-inner" id="gutter-inner"></div></div>
-          <textarea id="editor-css" class="code-editor" spellcheck="false" oninput="handleInput('css')" onscroll="handleScroll('css')"></textarea>
+          <div class="gutter" id="css-gutter" title="סמן/בטל כדי להפעיל או לכבות שורה"><div class="gutter-inner" id="css-gutter-inner"></div></div>
+          <textarea id="editor-css" class="code-editor" spellcheck="false" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="handleInput('css')" onscroll="handleScroll('css')"></textarea>
           <pre class="highlight-layer"><code id="code-css"></code></pre>
         </div>
       </div>
@@ -574,6 +584,154 @@ input:focus {                               /* שדה הקלט כשלחצו על
 }`
       },
 
+      singleCard: {
+        html: `<div class="card">
+  <img src="Images/nature.jpg" alt="טבע">
+  <div class="card-body">
+    <h3>נופי הטבע</h3>
+    <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+    <a href="#" class="btn">קרא עוד</a>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  כרטיסייה אחת, עם מינימום העיצוב שצריך כדי שתיראה כמו כרטיסייה.
+
+  div class="card" = הקופסה החיצונית שמחזיקה את הכול.
+  img = התמונה. src = הנתיב לקובץ, alt = טקסט חלופי.
+  div class="card-body" = קופסה לטקסט, כדי לתת לו מרווח פנימי בלי לפגוע בתמונה.
+  h3 = כותרת. p = פסקה. a = קישור שעוצב כמו כפתור.
+
+  שלושה דברים עושים את ה"כרטיסייה":
+  1. מסגרת ועיגול פינות (border, border-radius).
+  2. overflow: hidden, שחותך את התמונה לפי הפינות המעוגלות.
+  3. רוחב קבוע (width), כדי שהכרטיסייה לא תימתח על כל המסך.
+
+  ===== נסו בעצמכם =====
+  1. כבו את overflow: hidden וראו מה קורה לפינות התמונה.
+  2. כבו את width וראו איך הכרטיסייה נמתחת.
+  3. כבו את padding ב-.card-body וראו איפה הטקסט נדבק.
+  4. הוסיפו box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) ל-.card.
+--\>`,
+        css: `.card {                                 /* הכרטיסייה */
+  width: 280px;                         /* רוחב קבוע */
+  border: 1px solid #cbd5e1;            /* מסגרת דקה באפור */
+  border-radius: 12px;                  /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך התמונה לפי הפינות המעוגלות */
+}
+
+.card img {                             /* התמונה בתוך הכרטיסייה */
+  width: 100%;                          /* ממלאת את כל רוחב הכרטיסייה */
+  height: 160px;                        /* גובה קבוע */
+  object-fit: cover;                    /* חיתוך בלי מתיחה */
+}
+
+.card-body {                            /* אזור הטקסט */
+  padding: 16px;                        /* מרווח פנימי */
+}
+
+.btn {                                  /* הכפתור */
+  display: inline-block;                /* מאפשר מרווח פנימי לקישור */
+  background: #2563eb;                  /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 16px;                    /* מרווח פנימי */
+  border-radius: 6px;                   /* עיגול פינות */
+  text-decoration: none;                /* הסרת הקו התחתון */
+}`
+      },
+
+      singleCardToggle: {
+        html: `<div class="card">
+  <img src="Images/nature.jpg" alt="טבע">
+  <div class="card-body">
+    <h3>נופי הטבע</h3>
+    <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+    <input type="checkbox" id="more1" class="toggle">
+    <p class="more-text">המסלול נמשך כשלוש שעות ומתאים לכל המשפחה. בדרך עוברים ליד נחל קטן, ואפשר לעצור לפיקניק בצל העצים.</p>
+    <label for="more1" class="btn">
+      <span class="txt-more">קרא עוד</span>
+      <span class="txt-less">קרא פחות</span>
+    </label>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  זו אותה כרטיסייה מהדוגמה הקודמת, עם תוספת אחת:
+  הכפתור מציג טקסט נוסף, ולחיצה חוזרת מסתירה אותו. בלי JavaScript.
+
+  מה נוסף ב-HTML:
+  input type="checkbox" = תיבת סימון נסתרת. היא "זוכרת" אם הכרטיסייה פתוחה.
+  p class="more-text" = הטקסט הנוסף (מוסתר ב-CSS).
+  label for="more1" = הכפתור. הוא החליף את הקישור a.
+          לחיצה על label מסמנת או מבטלת את התיבה שה-id שלה זהה ל-for.
+  בתוך הכפתור יש שני כיתובים, ובכל רגע מוצג רק אחד מהם.
+
+  איך זה עובד ב-CSS:
+  .toggle:checked ~ .more-text = "כשהתיבה מסומנת, בחר את .more-text שבא אחריה".
+  הסימן ~ בוחר אחים שבאים אחרי האלמנט באותה קופסה.
+  לכן הסדר ב-HTML חשוב: התיבה חייבת לבוא לפני הטקסט ולפני הכפתור.
+
+  ===== נסו בעצמכם =====
+  1. כבו את הכלל .toggle:checked ~ .more-text וראו שהטקסט כבר לא נפתח.
+  2. כבו את display: none ב-.more-text וראו שהטקסט תמיד מוצג.
+  3. הוסיפו את המילה checked בתוך תגית ה-input וראו שהכרטיסייה נפתחת מההתחלה.
+--\>`,
+        css: `.card {                                 /* הכרטיסייה */
+  width: 280px;                         /* רוחב קבוע */
+  border: 1px solid #cbd5e1;            /* מסגרת דקה באפור */
+  border-radius: 12px;                  /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך התמונה לפי הפינות המעוגלות */
+}
+
+.card img {                             /* התמונה בתוך הכרטיסייה */
+  width: 100%;                          /* ממלאת את כל רוחב הכרטיסייה */
+  height: 160px;                        /* גובה קבוע */
+  object-fit: cover;                    /* חיתוך בלי מתיחה */
+}
+
+.card-body {                            /* אזור הטקסט */
+  padding: 16px;                        /* מרווח פנימי */
+}
+
+.btn {                                  /* הכפתור (עכשיו label) */
+  display: inline-block;                /* מאפשר מרווח פנימי */
+  background: #2563eb;                  /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 16px;                    /* מרווח פנימי */
+  border-radius: 6px;                   /* עיגול פינות */
+  cursor: pointer;                      /* סמן העכבר הופך ליד */
+}
+
+/* ===== התוספת: קרא עוד / קרא פחות ===== */
+.toggle {                               /* תיבת הסימון הנסתרת */
+  display: none;                        /* מוסתרת לגמרי (הכפתור הוא ה-label) */
+}
+
+.more-text {                            /* הטקסט הנוסף */
+  display: none;                        /* מוסתר כברירת מחדל */
+}
+
+.toggle:checked ~ .more-text {          /* כשהתיבה מסומנת: בוחר את .more-text שבא אחריה */
+  display: block;                       /* הטקסט הנוסף מוצג */
+}
+
+.txt-less {                             /* הכיתוב "קרא פחות" */
+  display: none;                        /* מוסתר כשהכרטיסייה סגורה */
+}
+
+.toggle:checked ~ .btn .txt-more {      /* כשהכרטיסייה פתוחה: הכיתוב "קרא עוד" */
+  display: none;                        /* מוסתר */
+}
+
+.toggle:checked ~ .btn .txt-less {      /* כשהכרטיסייה פתוחה: הכיתוב "קרא פחות" */
+  display: inline;                      /* מוצג */
+}`
+      },
+
       threeCards: {
         html: `<div class="container">
   <h2 class="main-title">גלריית כרטיסיות מודרנית</h2>
@@ -584,7 +742,12 @@ input:focus {                               /* שדה הקלט כשלחצו על
       <div class="card-content">
         <h3>נופי הטבע</h3>
         <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
-        <a href="#" class="card-btn">קרא עוד</a>
+        <input type="checkbox" id="more1" class="toggle">
+        <p class="more-text">המסלול נמשך כשלוש שעות ומתאים לכל המשפחה. בדרך עוברים ליד נחל קטן, ואפשר לעצור לפיקניק בצל העצים.</p>
+        <label for="more1" class="card-btn">
+          <span class="txt-more">קרא עוד</span>
+          <span class="txt-less">קרא פחות</span>
+        </label>
       </div>
     </div>
 
@@ -593,7 +756,12 @@ input:focus {                               /* שדה הקלט כשלחצו על
       <div class="card-content">
         <h3>פסגות ההרים</h3>
         <p>טיפוס מאתגר אל נופים עוצרי נשימה ושלג עד.</p>
-        <a href="#" class="card-btn">קרא עוד</a>
+        <input type="checkbox" id="more2" class="toggle">
+        <p class="more-text">הטיפוס מתחיל עם עלות השחר ודורש ציוד מתאים. מהפסגה נשקף נוף של עמקים וענני בוקר.</p>
+        <label for="more2" class="card-btn">
+          <span class="txt-more">קרא עוד</span>
+          <span class="txt-less">קרא פחות</span>
+        </label>
       </div>
     </div>
 
@@ -602,7 +770,12 @@ input:focus {                               /* שדה הקלט כשלחצו על
       <div class="card-content">
         <h3>פינת השקט</h3>
         <p>המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>
-        <a href="#" class="card-btn">קרא עוד</a>
+        <input type="checkbox" id="more3" class="toggle">
+        <p class="more-text">בית קטן עם קמין, מרפסת וקפה חם. אין בו טלוויזיה, ואת השקט שומעים מכל פינה.</p>
+        <label for="more3" class="card-btn">
+          <span class="txt-more">קרא עוד</span>
+          <span class="txt-less">קרא פחות</span>
+        </label>
       </div>
     </div>
 
@@ -614,16 +787,26 @@ input:focus {                               /* שדה הקלט כשלחצו על
 
   h2, h3 = כותרות. p = פסקה.
   img = תמונה. src = נתיב הקובץ, alt = טקסט חלופי.
-  a href="#" = קישור. הסימן # מציין "אין יעד" (משמש כמקום שמור).
   class = שם לעיצוב. modern-card נמצא על כל כרטיסייה,
           ולכן כל שינוי ב-CSS משפיע על שלושתן יחד.
   שימו לב: ה-HTML חוזר על אותו מבנה שלוש פעמים,
   ובדף Razor אפשר לכתוב אותו פעם אחת בתוך foreach.
 
+  "קרא עוד" / "קרא פחות" בלי JavaScript:
+  input type="checkbox" = תיבת סימון נסתרת. היא "זוכרת" אם הכרטיסייה פתוחה.
+  label for="more1" = הכפתור. לחיצה על label מסמנת או מבטלת את התיבה
+          שה-id שלה זהה לערך של for.
+  more-text = הטקסט הנוסף. ב-CSS הוא מוסתר, ונחשף כשהתיבה מסומנת.
+  בתוך הכפתור יש שני כיתובים (txt-more ו-txt-less),
+  ובכל רגע מוצג רק אחד מהם.
+  כל תיבה צריכה id ייחודי (more1, more2, more3), וה-for חייב להתאים לו.
+
   ===== נסו בעצמכם =====
   1. שנו flex: 1 1 220px ל-1 1 150px ועקבו אחרי הכרטיסיות.
   2. שנו translateY(-6px) ל-translateY(-20px).
   3. שנו את צבע ה-.card-btn:hover.
+  4. כבו את הכלל .toggle:checked ~ .more-text וראו שהטקסט כבר לא נפתח.
+  5. הוסיפו את המילה checked בתוך תגית ה-input הראשונה וראו שהכרטיסייה נפתחת מההתחלה.
 --\>`,
         css: `/* עיצוב כללי: חישוב רוחב כולל מסגרת ומרווח פנימי */
 * {                                     /* בוחר את כל האלמנטים בדף */
@@ -653,6 +836,7 @@ body {                                  /* בוחר את כל גוף הדף */
   display: flex;                        /* סידור הכרטיסיות בשורה */
   flex-wrap: wrap;                      /* אם אין מקום, כרטיסייה יורדת לשורה הבאה */
   justify-content: center;              /* מרכוז הכרטיסיות */
+  align-items: flex-start;              /* כל כרטיסייה בגובה שלה: כשאחת נפתחת, האחרות לא נמתחות */
   gap: 20px;                            /* מרווח בין הכרטיסיות */
 }
 
@@ -683,7 +867,6 @@ body {                                  /* בוחר את כל גוף הדף */
   padding: 18px;                        /* מרווח פנימי */
   display: flex;                        /* Flexbox */
   flex-direction: column;               /* סידור האלמנטים בטור */
-  flex: 1;                              /* האזור תופס את שאר גובה הכרטיסייה */
 }
 
 .card-content h3 {                      /* כותרת הכרטיסייה */
@@ -692,21 +875,48 @@ body {                                  /* בוחר את כל גוף הדף */
   color: #0f172a;                       /* צבע כהה */
 }
 
-.card-content p {                       /* הטקסט בכרטיסייה */
+.card-content p {                       /* הטקסט בכרטיסייה (גם הקצר וגם הנוסף) */
   font-size: 15px;                      /* גודל טקסט נוח לקריאה */
   color: #475569;                       /* צבע אפור */
   line-height: 1.6;                     /* גובה שורה */
   margin-bottom: 16px;                  /* מרווח מתחת לפסקה */
-  flex: 1;                              /* דוחף את הכפתור לתחתית הכרטיסייה */
 }
 
-.card-btn {                             /* כפתור "קרא עוד" */
+/* ===== קרא עוד / קרא פחות ===== */
+.toggle {                               /* תיבת הסימון הנסתרת */
+  position: absolute;                   /* מוציאה את התיבה מהסידור, כדי שלא תתפוס מקום */
+  opacity: 0;                           /* שקופה לגמרי, אבל עדיין קיימת ופועלת */
+  pointer-events: none;                 /* לא מגיבה ללחיצה ישירה (לוחצים על הכפתור) */
+}
+
+.more-text {                            /* הטקסט הנוסף */
+  display: none;                        /* מוסתר כברירת מחדל */
+}
+
+.toggle:checked ~ .more-text {          /* כשהתיבה מסומנת: ~ בוחר את .more-text שבא אחריה */
+  display: block;                       /* הטקסט הנוסף מוצג */
+}
+
+.txt-less {                             /* הכיתוב "קרא פחות" */
+  display: none;                        /* מוסתר כשהכרטיסייה סגורה */
+}
+
+.toggle:checked ~ .card-btn .txt-more { /* כשהכרטיסייה פתוחה: הכיתוב "קרא עוד" */
+  display: none;                        /* מוסתר */
+}
+
+.toggle:checked ~ .card-btn .txt-less { /* כשהכרטיסייה פתוחה: הכיתוב "קרא פחות" */
+  display: inline;                      /* מוצג */
+}
+
+.card-btn {                             /* הכפתור (label) "קרא עוד" / "קרא פחות" */
   align-self: flex-start;               /* הכפתור לא נמתח לכל הרוחב אלא נשאר בקצה */
   background-color: #2563eb;            /* רקע כחול */
   color: white;                         /* טקסט לבן */
   padding: 8px 18px;                    /* מרווח פנימי */
   border-radius: 8px;                   /* עיגול פינות */
-  text-decoration: none;                /* הסרת קו תחתון מהקישור */
+  cursor: pointer;                      /* סמן העכבר הופך ליד */
+  user-select: none;                    /* לחיצות חוזרות לא מסמנות את הכיתוב */
   font-size: 14px;                      /* גודל טקסט */
   font-weight: bold;                    /* כתב מודגש */
   transition: background-color 0.3s;    /* מעבר חלק לצבע הרקע */
@@ -714,6 +924,278 @@ body {                                  /* בוחר את כל גוף הדף */
 
 .card-btn:hover {                       /* הכפתור בזמן שהעכבר מעליו */
   background-color: #1d4ed8;            /* כחול כהה יותר */
+}
+
+.toggle:focus-visible ~ .card-btn {     /* כשמגיעים לתיבה עם מקש Tab */
+  outline: 3px solid #93c5fd;           /* מסגרת הדגשה לנגישות */
+}`
+      },
+
+      cardPages: {
+        html: `<div class="home-page">
+  <h2 class="main-title">מדריך טיולים</h2>
+  <div class="cards-grid">
+
+    <div class="trip-card">
+      <img src="Images/nature.jpg" alt="טבע">
+      <div class="trip-body">
+        <h3>נופי הטבע</h3>
+        <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+        <a href="#nature" class="trip-btn">לעמוד המלא</a>
+      </div>
+    </div>
+
+    <div class="trip-card">
+      <img src="Images/mountain.jpg" alt="הר">
+      <div class="trip-body">
+        <h3>פסגות ההרים</h3>
+        <p>טיפוס מאתגר אל נופים עוצרי נשימה ושלג עד.</p>
+        <a href="#mountain" class="trip-btn">לעמוד המלא</a>
+      </div>
+    </div>
+
+    <div class="trip-card">
+      <img src="Images/home.jpg" alt="בית">
+      <div class="trip-body">
+        <h3>פינת השקט</h3>
+        <p>המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>
+        <a href="#home" class="trip-btn">לעמוד המלא</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<article class="article-page" id="nature">
+  <a href="#" class="back-link">← חזרה לכרטיסיות</a>
+  <img src="Images/nature.jpg" alt="טבע" class="article-img">
+  <h1>נופי הטבע</h1>
+  <p class="lead">סיור מרהיב בין מרחבים ירוקים ועצים פורחים, הרחק מרעש העיר.</p>
+  <h2>מתי כדאי לצאת?</h2>
+  <p>האביב הוא הזמן המושלם: השדות ירוקים, <strong>הפרחים בשיא פריחתם</strong> והאוויר נעים. כדאי לצאת בבוקר, כשהשבילים עוד שקטים.</p>
+  <blockquote>"הדרך הטובה להכיר מקום היא ללכת בו לאט."</blockquote>
+  <h2>מה כדאי לקחת?</h2>
+  <ul>
+    <li>בקבוק מים</li>
+    <li>נעליים נוחות</li>
+    <li>כובע ומשקפי שמש</li>
+  </ul>
+</article>
+
+<article class="article-page" id="mountain">
+  <a href="#" class="back-link">← חזרה לכרטיסיות</a>
+  <img src="Images/mountain.jpg" alt="הר" class="article-img">
+  <h1>פסגות ההרים</h1>
+  <p class="lead">טיפוס מאתגר אל נופים עוצרי נשימה, שלג עד ואוויר צלול.</p>
+  <h2>איך מתכוננים?</h2>
+  <p>הטיפוס דורש <strong>ציוד מתאים וכושר בסיסי</strong>. מתחילים עם עלות השחר, כדי להגיע לפסגה לפני שמזג האוויר משתנה.</p>
+  <blockquote>"כל פסגה מתחילה בצעד אחד קטן."</blockquote>
+  <h2>מה כדאי לקחת?</h2>
+  <ul>
+    <li>מעיל חם ושכבות</li>
+    <li>מפה ומצפן</li>
+    <li>מים וחטיפי אנרגיה</li>
+  </ul>
+</article>
+
+<article class="article-page" id="home">
+  <a href="#" class="back-link">← חזרה לכרטיסיות</a>
+  <img src="Images/home.jpg" alt="בית" class="article-img">
+  <h1>פינת השקט</h1>
+  <p class="lead">המקום המושלם לנוח בו ולהירגע אחרי יום ארוך.</p>
+  <h2>למה דווקא כאן?</h2>
+  <p>בית קטן עם קמין ומרפסת, <strong>בלי טלוויזיה ובלי רעש</strong>. מכל פינה שומעים רק את הרוח ואת הקפה שמבעבע.</p>
+  <blockquote>"לפעמים הדבר הכי פורה לעשות הוא לנוח."</blockquote>
+  <h2>מה עושים כאן?</h2>
+  <ul>
+    <li>קוראים ספר ליד הקמין</li>
+    <li>שותים קפה במרפסת</li>
+    <li>יוצאים לטיול שקיעה</li>
+  </ul>
+</article>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  בדף הזה יש כרטיסיות, וכל כפתור מעביר ל"עמוד" אחר עם טקסט מעוצב.
+  הכרטיסיות (home-page) והעמודים (article-page) כתובים באותו קובץ.
+
+  a href="#nature" = קישור לאלמנט שה-id שלו nature.
+  ב-CSS, :target בוחר את האלמנט שהקישור הפנה אליו.
+  article-page מוסתר כברירת מחדל, ו-:target מציג רק את העמוד שנבחר.
+  body:has(.article-page:target) = "גוף הדף שיש בו עמוד פתוח":
+  כשיש עמוד פתוח, הכרטיסיות מוסתרות.
+  a href="#" = חזרה: אין עמוד נבחר, ולכן הכרטיסיות חוזרות.
+
+  באתר אמיתי כל עמוד הוא קובץ נפרד, והכפתור מצביע עליו:
+  a href="nature.html"  (ב-Razor Pages: a asp-page="Nature").
+  כאן משתמשים ב-:target כדי להדגים את זה בקובץ אחד.
+
+  article = תוכן עצמאי (כמו מאמר). blockquote = ציטוט.
+  strong = הדגשה, ו-ul/li = רשימה.
+
+  ===== נסו בעצמכם =====
+  1. שנו את צבע הרקע של .lead.
+  2. שנו את border-right ב-blockquote ל-border-left.
+  3. כבו את הכלל :target וראו שהעמודים לא נפתחים.
+  4. הוסיפו כרטיסייה רביעית ועמוד רביעי עם id משלו.
+--\>`,
+        css: `* {                                     /* בוחר את כל האלמנטים בדף */
+  box-sizing: border-box;               /* רוחב וגובה כוללים גם padding וגם border */
+}
+
+body {                                  /* בוחר את כל גוף הדף */
+  background-color: #0f172a;            /* רקע כחול כהה מאוד */
+  font-family: Arial, sans-serif;       /* גופן קריא וללא סריף */
+  padding: 30px 20px;                   /* מרווח פנימי מהשוליים */
+}
+
+/* ===== עמוד הכרטיסיות ===== */
+.home-page {                            /* המכולה של עמוד הכרטיסיות */
+  max-width: 1000px;                    /* הגבלת רוחב */
+  margin: 0 auto;                       /* מרכוז בדף */
+}
+
+.main-title {                           /* הכותרת הראשית */
+  text-align: center;                   /* מרכוז הכותרת */
+  color: #38bdf8;                       /* צבע תכלת בהיר */
+  margin-bottom: 25px;                  /* מרווח מתחת לכותרת */
+}
+
+.cards-grid {                           /* המכולה של הכרטיסיות */
+  display: flex;                        /* סידור בשורה */
+  flex-wrap: wrap;                      /* ירידה לשורה הבאה כשאין מקום */
+  justify-content: center;              /* מרכוז הכרטיסיות */
+  gap: 20px;                            /* מרווח בין הכרטיסיות */
+}
+
+.trip-card {                            /* כל כרטיסייה */
+  flex: 1 1 220px;                      /* גדלה וקטנה לפי המקום, רוחב בסיס 220px */
+  max-width: 310px;                     /* רוחב מקסימלי */
+  background: #f8fafc;                  /* רקע לבן-אפרפר */
+  border-radius: 14px;                  /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך מה שיוצא מהפינות המעוגלות */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35); /* צל כהה מתחת לכרטיסייה */
+}
+
+.trip-card img {                        /* התמונה בכרטיסייה */
+  width: 100%;                          /* ממלאת את רוחב הכרטיסייה */
+  height: 160px;                        /* גובה קבוע */
+  object-fit: cover;                    /* חיתוך בלי מתיחה */
+  background: #cbd5e1;                  /* רקע אפור למקרה שהתמונה לא נטענה */
+}
+
+.trip-body {                            /* אזור הטקסט בכרטיסייה */
+  padding: 18px;                        /* מרווח פנימי */
+}
+
+.trip-body h3 {                         /* כותרת הכרטיסייה */
+  color: #0f172a;                       /* צבע כהה */
+  margin-bottom: 8px;                   /* מרווח מתחת */
+}
+
+.trip-body p {                          /* הטקסט בכרטיסייה */
+  color: #475569;                       /* אפור */
+  line-height: 1.6;                     /* גובה שורה */
+  margin-bottom: 16px;                  /* מרווח מתחת */
+}
+
+.trip-btn {                             /* הכפתור (קישור בצורת כפתור) */
+  display: inline-block;                /* מאפשר להגדיר לקישור מרווח פנימי כמו לכפתור */
+  background-color: #2563eb;            /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 18px;                    /* מרווח פנימי */
+  border-radius: 8px;                   /* עיגול פינות */
+  text-decoration: none;                /* הסרת הקו התחתון מהקישור */
+  font-weight: bold;                    /* כתב מודגש */
+}
+
+.trip-btn:hover {                       /* הכפתור בזמן ריחוף */
+  background-color: #1d4ed8;            /* כחול כהה יותר */
+}
+
+/* ===== העמודים הפנימיים ===== */
+.article-page {                         /* כל עמוד פנימי */
+  display: none;                        /* מוסתר כברירת מחדל */
+  max-width: 700px;                     /* רוחב קריא לטקסט */
+  margin: 0 auto;                       /* מרכוז בדף */
+  background: #ffffff;                  /* דף לבן */
+  padding: 30px;                        /* מרווח פנימי */
+  border-radius: 16px;                  /* עיגול פינות */
+  color: #334155;                       /* צבע טקסט אפור כהה */
+  line-height: 1.8;                     /* ריווח שורות נדיב לקריאה */
+}
+
+.article-page:target {                  /* העמוד שאליו הקישור הפנה */
+  display: block;                       /* מציג את העמוד הזה בלבד */
+}
+
+body:has(.article-page:target) .home-page { /* כשיש עמוד פתוח, בוחר את עמוד הכרטיסיות */
+  display: none;                        /* מסתיר את הכרטיסיות */
+}
+
+.back-link {                            /* קישור החזרה */
+  display: inline-block;                /* מאפשר מרווח מתחת לקישור */
+  margin-bottom: 18px;                  /* מרווח מתחת */
+  color: #2563eb;                       /* כחול */
+  font-weight: bold;                    /* כתב מודגש */
+  text-decoration: none;                /* בלי קו תחתון */
+}
+
+.back-link:hover {                      /* קישור החזרה בזמן ריחוף */
+  text-decoration: underline;           /* קו תחתון */
+}
+
+.article-img {                          /* תמונת הכותרת של העמוד */
+  width: 100%;                          /* רוחב מלא */
+  height: 240px;                        /* גובה קבוע */
+  object-fit: cover;                    /* חיתוך בלי מתיחה */
+  border-radius: 12px;                  /* עיגול פינות */
+  margin-bottom: 20px;                  /* מרווח מתחת */
+  background: #cbd5e1;                  /* רקע למקרה שהתמונה לא נטענה */
+}
+
+.article-page h1 {                      /* כותרת העמוד */
+  color: #0f172a;                       /* צבע כהה */
+  border-bottom: 4px solid #38bdf8;     /* קו תכלת מתחת לכותרת */
+  padding-bottom: 8px;                  /* רווח בין הכותרת לקו */
+  margin-bottom: 16px;                  /* מרווח מתחת */
+}
+
+.lead {                                 /* פסקת הפתיחה */
+  font-size: 1.2rem;                    /* גדולה מהטקסט הרגיל */
+  font-weight: bold;                    /* כתב מודגש */
+  color: #1e3a8a;                       /* כחול כהה */
+  margin-bottom: 20px;                  /* מרווח מתחת */
+}
+
+.article-page h2 {                      /* כותרות המשנה */
+  color: #1d4ed8;                       /* כחול */
+  margin: 22px 0 8px;                   /* מרווח: 22 מעל, 0 לצדדים, 8 מתחת */
+}
+
+.article-page strong {                  /* טקסט מודגש */
+  background: #fef08a;                  /* רקע צהוב כמו טוש */
+  padding: 0 4px;                       /* מרווח קטן בצדדים */
+  border-radius: 4px;                   /* עיגול פינות */
+}
+
+.article-page blockquote {              /* ציטוט */
+  background: #eff6ff;                  /* רקע תכלת בהיר */
+  border-right: 5px solid #2563eb;      /* פס כחול בצד ימין (הדף בעברית) */
+  border-radius: 8px;                   /* עיגול פינות */
+  padding: 12px 18px;                   /* מרווח פנימי */
+  margin: 20px 0;                       /* מרווח מעל ומתחת */
+  font-style: italic;                   /* כתב נטוי */
+  color: #1e3a8a;                       /* כחול כהה */
+}
+
+.article-page ul {                      /* רשימה */
+  margin-right: 24px;                   /* הזחה נוספת מימין */
+}
+
+.article-page li {                      /* פריט ברשימה */
+  margin-bottom: 6px;                   /* מרווח בין הפריטים */
 }`
       },
 
@@ -1589,15 +2071,42 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
 
     /* ================= לוגיקת העורך ================= */
     let activeTab = 'html'; let currentFontSize = 18;
-    function init() { onTopicChange('animals'); }
+    // גובה שורה בפיקסלים שלמים (1.6 מגודל הפונט, מעוגל). אותו ערך משמש את תיבת הטקסט, שכבת הצבעים ועמודת התיבות
+    function editorLineHeight() { return Math.round(currentFontSize * 1.6); }
+    function applyEditorMetrics() {
+      const root = document.documentElement.style;
+      root.setProperty('--editor-font-size', currentFontSize + 'px');
+      root.setProperty('--editor-lh', editorLineHeight() + 'px');
+    }
+    function init() {
+      applyEditorMetrics();
+      onTopicChange('animals');
+      watchScroll();
+      // סנכרון מחדש כשהחלון משתנה (מסך מלא, זום) או כשהפונטים סיימו להיטען
+      if (window.ResizeObserver) new ResizeObserver(syncAll).observe(document.querySelector('.editor-wrapper'));
+      window.addEventListener('resize', syncAll);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncAll);
+    }
+    function syncAll() { handleScroll('html'); handleScroll('css'); }
+    // רשת ביטחון: בכל פריים בודקים שהצבעים והסמן באותה נקודת גלילה. אם הדפדפן גלל את תיבת הטקסט
+    // בלי לשלוח אירוע (קורה, למשל, בהקלדה בסוף הקובץ ב-Windows), היישור מתוקן מיד.
+    const lastScroll = { html: [-1, -1], css: [-1, -1] };
+    function watchScroll() {
+      const t = activeTab, ta = document.getElementById('editor-' + t);
+      if (ta.scrollTop !== lastScroll[t][0] || ta.scrollLeft !== lastScroll[t][1]) {
+        lastScroll[t] = [ta.scrollTop, ta.scrollLeft];
+        handleScroll(t);
+      }
+      requestAnimationFrame(watchScroll);
+    }
 
     function onTopicChange(key) {
       const topic = defaultTopics[key] || defaultTopics.animals;
       cleanStash = null; document.getElementById('btn-comments').textContent = '🧹 הסתר הערות';
       document.getElementById('editor-html').value = topic.html;
       document.getElementById('editor-css').value = topic.css;
-      disabledLines.clear(); disabledRules.clear();
-      prevCssLines = document.getElementById('editor-css').value.split('\n').length;
+      clearDisabled('html'); clearDisabled('css');
+      STATE.html.prev = countLines('html'); STATE.css.prev = countLines('css');
       renderGutter();
       triggerHighlight('html'); triggerHighlight('css'); updatePreview();
     }
@@ -1608,15 +2117,18 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
       document.getElementById('tab-css').classList.toggle('active', tab === 'css');
       document.getElementById('wrapper-html').style.display = tab === 'html' ? 'block' : 'none';
       document.getElementById('wrapper-css').style.display = tab === 'css' ? 'block' : 'none';
-      document.getElementById('enable-all').style.display = tab === 'css' ? 'inline-block' : 'none';
-      if (tab === 'css') renderGutter();
+      renderGutter(tab);
+      syncAll();
     }
 
     /* ===== הפעלה/כיבוי של שורות וכללי CSS ===== */
-    let disabledLines = new Set();   // שורות מאפיין בודדות שכובו (מספר שורה, מ-0)
-    let disabledRules = new Set();   // כללים שלמים שכובו (מספר שורת הסלקטור הראשונה)
-    let parsedCSS = { decl: [], rules: [] };
-    let prevCssLines = 0;
+    // מצב ההפעלה/כיבוי לכל עורך: שורות בודדות שכובו, כללים/אלמנטים שלמים שכובו, וניתוח הקוד
+    const STATE = {
+      html: { lines: new Set(), rules: new Set(), parsed: { decl: [], rules: [] }, prev: 0 },
+      css:  { lines: new Set(), rules: new Set(), parsed: { decl: [], rules: [] }, prev: 0 }
+    };
+    const clearDisabled = t => { STATE[t].lines.clear(); STATE[t].rules.clear(); };
+    const countLines = t => document.getElementById('editor-' + t).value.split('\n').length;
 
     // מנתחת את ה-CSS: אילו שורות הן מאפיינים, ואילו כללים ({ }) קיימים ובאילו שורות
     function parseCSS(text) {
@@ -1639,57 +2151,95 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
       return { decl, rules };
     }
 
-    // כל השורות שכבויות כרגע: שורות בודדות + כל השורות שבתוך כלל כבוי
-    function offSet() {
-      const off = new Set(disabledLines);
-      parsedCSS.rules.forEach(r => {
-        if (disabledRules.has(r.start)) for (let i = r.start; i <= r.end; i++) off.add(i);
+    // מנתחת את ה-HTML: אילו שורות הן תוכן (אפשר לכבות אותן), ואילו אלמנטים משתרעים על כמה שורות
+    const VOID_TAGS = /^(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)$/i;
+    function parseHTML(text) {
+      const decl = [], rules = [], stack = [];
+      let inCmt = false;
+      text.split('\n').forEach((ln, i) => {
+        let rest = ln, visible = '';                         // מסירים הערות (גם כאלה שמשתרעות על כמה שורות)
+        while (rest.length) {
+          if (inCmt) {
+            const k = rest.indexOf(CMT_CLOSE);
+            if (k === -1) rest = ''; else { rest = rest.slice(k + CMT_CLOSE.length); inCmt = false; }
+          } else {
+            const k = rest.indexOf(CMT_OPEN);
+            if (k === -1) { visible += rest; rest = ''; } else { visible += rest.slice(0, k); rest = rest.slice(k + CMT_OPEN.length); inCmt = true; }
+          }
+        }
+        decl.push(visible.replace(/<\/[^>]*>/g, '').trim() !== '');   // שורה של תגית סוגרת בלבד אינה נחשבת
+        const re = /<(\/?)([a-zA-Z][\w:-]*)[^>]*?(\/?)>/g;
+        let m;
+        while ((m = re.exec(visible))) {
+          const closing = m[1] === '/', tag = m[2].toLowerCase();
+          if (closing) {
+            for (let k = stack.length - 1; k >= 0; k--) {
+              if (stack[k].tag === tag) {
+                const it = stack.splice(k)[0];
+                if (it.line < i) rules.push({ start: it.line, end: i });
+                break;
+              }
+            }
+          } else if (!m[3] && !VOID_TAGS.test(tag)) stack.push({ tag, line: i });
+        }
+      });
+      return { decl, rules };
+    }
+    const parseCode = (t, text) => t === 'html' ? parseHTML(text) : parseCSS(text);
+
+    // כל השורות שכבויות כרגע: שורות בודדות + כל השורות שבתוך כלל/אלמנט כבוי
+    function offSet(t) {
+      const st = STATE[t], off = new Set(st.lines);
+      st.parsed.rules.forEach(r => {
+        if (st.rules.has(r.start)) for (let i = r.start; i <= r.end; i++) off.add(i);
       });
       return off;
     }
 
-    function renderGutter() {
-      const ta = document.getElementById('editor-css');
-      const lh = currentFontSize * 1.6;
-      parsedCSS = parseCSS(ta.value);
+    function renderGutter(t) {
+      if (!t) { renderGutter('html'); renderGutter('css'); return; }
+      const ta = document.getElementById('editor-' + t), st = STATE[t];
+      const lh = editorLineHeight();
+      st.parsed = parseCode(t, ta.value);
       const ruleAt = new Map();
-      parsedCSS.rules.forEach(r => {
+      st.parsed.rules.forEach(r => {
         const prev = ruleAt.get(r.start);
         if (!prev || r.end > prev.end) ruleAt.set(r.start, r);
       });
-      disabledLines = new Set([...disabledLines].filter(i => parsedCSS.decl[i]));
-      disabledRules = new Set([...disabledRules].filter(i => ruleAt.has(i)));
+      st.lines = new Set([...st.lines].filter(i => st.parsed.decl[i]));
+      st.rules = new Set([...st.rules].filter(i => ruleAt.has(i)));
       // האם שורה נמצאת בתוך כלל אחר שכבוי (ואז אי אפשר לשנות אותה בנפרד)
-      const covered = (i, own) => parsedCSS.rules.some(r => disabledRules.has(r.start) && r.start !== own && i >= r.start && i <= r.end);
+      const covered = (i, own) => st.parsed.rules.some(r => st.rules.has(r.start) && r.start !== own && i >= r.start && i <= r.end);
+      const what = t === 'html' ? 'האלמנט כולו' : 'הכלל כולו';
       let h = '';
-      parsedCSS.decl.forEach((isDecl, i) => {
+      st.parsed.decl.forEach((isDecl, i) => {
         const pos = `top:${20 + i * lh}px;height:${lh}px`;
         if (ruleAt.has(i)) {
           const cov = covered(i, i);
-          h += `<label class="g-row rule${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של הכלל כולו"><input type="checkbox" data-rule="${i}" ${disabledRules.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
+          h += `<label class="g-row rule${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של ${what}"><input type="checkbox" data-type="${t}" data-rule="${i}" ${st.rules.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
         } else if (isDecl) {
           const cov = covered(i, -1);
-          h += `<label class="g-row${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של שורה זו"><input type="checkbox" data-line="${i}" ${disabledLines.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
+          h += `<label class="g-row${cov ? ' cov' : ''}" style="${pos}" title="כיבוי/הפעלה של שורה זו"><input type="checkbox" data-type="${t}" data-line="${i}" ${st.lines.has(i) ? '' : 'checked'} ${cov ? 'disabled' : ''}></label>`;
         }
       });
-      const inner = document.getElementById('gutter-inner');
+      const inner = document.getElementById(t + '-gutter-inner');
       inner.innerHTML = h;
       inner.style.transform = `translateY(${-ta.scrollTop}px)`;
     }
 
     document.addEventListener('change', e => {
       const d = e.target.dataset;
-      if (!d || (d.line === undefined && d.rule === undefined)) return;
-      const isRule = d.rule !== undefined;
-      const set = isRule ? disabledRules : disabledLines;
+      if (!d || !d.type || (d.line === undefined && d.rule === undefined)) return;
+      const isRule = d.rule !== undefined, st = STATE[d.type];
+      const set = isRule ? st.rules : st.lines;
       const i = +(isRule ? d.rule : d.line);
       if (e.target.checked) set.delete(i); else set.add(i);
-      renderGutter(); triggerHighlight('css'); updatePreview();
+      renderGutter(d.type); triggerHighlight(d.type); updatePreview();
     });
 
     function enableAllLines() {
-      disabledLines.clear(); disabledRules.clear();
-      renderGutter(); triggerHighlight('css'); updatePreview();
+      clearDisabled(activeTab);
+      renderGutter(activeTab); triggerHighlight(activeTab); updatePreview();
     }
 
     // כשמוסיפים/מוחקים שורות בעורך, מזיזים את מספרי השורות הכבויות בהתאם
@@ -1703,24 +2253,26 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
       return next;
     }
 
-    function shiftDisabled() {
-      const ta = document.getElementById('editor-css');
-      const n = ta.value.split('\n').length, delta = n - prevCssLines;
+    function shiftDisabled(t) {
+      const ta = document.getElementById('editor-' + t), st = STATE[t];
+      const n = countLines(t), delta = n - st.prev;
       if (delta !== 0) {
         const c = ta.value.slice(0, ta.selectionStart).split('\n').length - 1;
-        disabledLines = shiftSet(disabledLines, c, delta);
-        disabledRules = shiftSet(disabledRules, c, delta);
+        st.lines = shiftSet(st.lines, c, delta);
+        st.rules = shiftSet(st.rules, c, delta);
       }
-      prevCssLines = n;
+      st.prev = n;
     }
 
-    function cssForPreview() {
-      const off = offSet();
-      return document.getElementById('editor-css').value.split('\n').filter((_, i) => !off.has(i)).join('\n');
+    function codeForPreview(t) {
+      const off = offSet(t);
+      return document.getElementById('editor-' + t).value.split('\n').filter((_, i) => !off.has(i)).join('\n');
     }
+    const cssForPreview = () => codeForPreview('css');
+    const htmlForPreview = () => codeForPreview('html');
 
     function handleInput(type) {
-      if (type === 'css') { shiftDisabled(); renderGutter(); }
+      shiftDisabled(type); renderGutter(type);
       triggerHighlight(type); updatePreview();
     }
 
@@ -1729,38 +2281,39 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
       const codeBlock = document.getElementById(`code-${t}`);
       let text = textarea.value;
       if (text.endsWith("\n")) { text += " "; }
-      if (t === 'html') codeBlock.innerHTML = highlightHTML(text);
-      else {
-        const off = offSet();
-        codeBlock.innerHTML = highlightCSS(text).split('\n').map((l, i) => off.has(i) ? `<span class="off">${l}</span>` : l).join('\n');
-      }
+      const off = offSet(t);
+      codeBlock.innerHTML = (t === 'html' ? highlightHTML(text) : highlightCSS(text))
+        .split('\n').map((l, i) => off.has(i) ? `<span class="off">${l}</span>` : l).join('\n');
       handleScroll(t);
+      // הדפדפן גולל את תיבת הטקסט (כדי להשאיר את הסמן בתצוגה) מעט אחרי אירוע ההקלדה, לכן מסנכרנים שוב בפריים הבא
+      lastScroll[t] = [-1, -1];
+      requestAnimationFrame(() => handleScroll(t));
     }
 
     function handleScroll(type) {
       const textarea = document.getElementById(`editor-${type}`);
-      const highlightLayer = textarea.nextElementSibling;
-      highlightLayer.scrollTop = textarea.scrollTop;
-      highlightLayer.scrollLeft = textarea.scrollLeft;
-      if (type === 'css') document.getElementById('gutter-inner').style.transform = `translateY(${-textarea.scrollTop}px)`;
+      const code = document.getElementById(`code-${type}`);
+      code.style.transform = `translate(${-textarea.scrollLeft}px, ${-textarea.scrollTop}px)`;
+      document.getElementById(`${type}-gutter-inner`).style.transform = `translateY(${-textarea.scrollTop}px)`;
     }
 
-    function buildPage(h, c) {
-      return `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${c}</style></head><body>${h}</body></html>`;
+    // בתצוגה החיה (srcdoc) קישור כמו href="#lion" היה טוען מחדש את כל המעבדה בתוך התצוגה.
+    // הסקריפט הזה מבצע קפיצה בתוך אותו דף (חשוב גם ל-:target). הוא מתווסף רק לתצוגה, לא לקובץ שמורידים.
+    const PREVIEW_ANCHOR_FIX = '<scr' + 'ipt>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^=\'#\']");if(!a)return;e.preventDefault();var id=a.getAttribute("href").slice(1);location.hash=id;if(id){var t=document.getElementById(id);if(t&&t.scrollIntoView)t.scrollIntoView();}else{window.scrollTo(0,0);}});</scr' + 'ipt>';
+    function buildPage(h, c, forPreview) {
+      return `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${c}</style></head><body>${h}${forPreview ? PREVIEW_ANCHOR_FIX : ''}</body></html>`;
     }
 
     function updatePreview() {
-      const html = document.getElementById('editor-html').value;
+      const html = htmlForPreview();
       const css = cssForPreview();
-      document.getElementById('preview-output').srcdoc = buildPage(html, css);
+      document.getElementById('preview-output').srcdoc = buildPage(html, css, true);
     }
 
     function adjustFontSize(amount) {
       currentFontSize = Math.max(12, currentFontSize + amount);
-      document.querySelectorAll('.code-editor, .highlight-layer').forEach(el => {
-        el.style.fontSize = currentFontSize + 'px';
-      });
-      renderGutter();
+      applyEditorMetrics();
+      renderGutter(); syncAll();
     }
 
     /* ===== תצוגה במכשירים שונים ===== */
@@ -1791,8 +2344,8 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
         h.value = cleanStash.html; c.value = cleanStash.css; cleanStash = null;
         b.textContent = '🧹 הסתר הערות';
       }
-      disabledLines.clear(); disabledRules.clear();
-      prevCssLines = c.value.split('\n').length;
+      clearDisabled('html'); clearDisabled('css');
+      STATE.html.prev = countLines('html'); STATE.css.prev = countLines('css');
       renderGutter(); triggerHighlight('html'); triggerHighlight('css'); updatePreview();
     }
 
@@ -1806,7 +2359,7 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
     }
 
     function saveToFile() {
-      const h = document.getElementById('editor-html').value;
+      const h = htmlForPreview();
       const c = cssForPreview();
       const blob = new Blob([buildPage(h, c)], { type: 'text/html' });
       const a = document.createElement('a');
