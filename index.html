@@ -98,22 +98,24 @@
           <option value="hoverDemo">5. 🖱️ אפקט Hover פשוט (כפתור)</option>
           <option value="focusActive">6. 🎯 אירועי עכבר ומקלדת: Focus ו-Active</option>
           <option value="singleCard">7. 🃏 כרטיסייה אחת (עיצוב מינימלי)</option>
-          <option value="singleCardToggle">8. 🔀 כרטיסייה אחת: קרא עוד / קרא פחות</option>
-          <option value="threeCards">9. 🌟 גלריית 3 כרטיסיות (קרא עוד / קרא פחות)</option>
-          <option value="cardPages">10. 📄 כרטיסיות שמובילות לעמוד נוסף</option>
-          <option value="flipCard">11. Flip Card (אפקט 3D)</option>
-          <option value="page2">12. Hover Gallery (אפקטי מעבר על תמונות)</option>
+          <option value="singleCardDetails">8. 📂 כרטיסייה אחת: קרא עוד עם details ו-summary</option>
+          <option value="singleCardLink">9. 🔗 כרטיסייה אחת: קישור לעמוד אחר (Razor Pages)</option>
+          <option value="singleCardToggle">10. 🔀 כרטיסייה אחת: קרא עוד / קרא פחות (עם checkbox)</option>
+          <option value="threeCards">11. 🌟 גלריית 3 כרטיסיות (קרא עוד / קרא פחות)</option>
+          <option value="cardPages">12. 📄 כרטיסיות שמובילות לעמוד נוסף</option>
+          <option value="flipCard">13. Flip Card (אפקט 3D)</option>
+          <option value="page2">14. Hover Gallery (אפקטי מעבר על תמונות)</option>
         </optgroup>
         <optgroup label="🌀 אנימציות וגרדיאנטים">
-          <option value="page3">13. Infinite Animations (הקפצה והבהוב)</option>
-          <option value="page4">14. Animated Gradient Background</option>
-          <option value="page6">15. Parallax Hero Section</option>
+          <option value="page3">15. Infinite Animations (הקפצה והבהוב)</option>
+          <option value="page4">16. Animated Gradient Background</option>
+          <option value="page6">17. Parallax Hero Section</option>
         </optgroup>
         <optgroup label="🧩 טפסים, מבנה ו-Bootstrap (הכנה ל-Razor Pages)">
-          <option value="formFields">16. 📝 שדות טופס (input, select, radio...)</option>
-          <option value="layoutPage">17. 🏗️ מבנה דף כמו ב-Layout</option>
-          <option value="dataTable">18. 📊 טבלת נתונים מעוצבת</option>
-          <option value="bootstrapCards">19. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
+          <option value="formFields">18. 📝 שדות טופס (input, select, radio...)</option>
+          <option value="layoutPage">19. 🏗️ מבנה דף כמו ב-Layout</option>
+          <option value="dataTable">20. 📊 טבלת נתונים מעוצבת</option>
+          <option value="bootstrapCards">21. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
         </optgroup>
       </select>
     </div>
@@ -642,6 +644,157 @@ input:focus {                               /* שדה הקלט כשלחצו על
 }`
       },
 
+      singleCardDetails: {
+        html: `<div class="card">
+  <img src="Images/nature.jpg" alt="טבע">
+  <div class="card-body">
+    <h3>נופי הטבע</h3>
+    <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+    
+    <details>
+      <summary>קרא עוד</summary>
+      <p>המסלול נמשך כשלוש שעות ומתאים לכל המשפחה. בדרך עוברים ליד נחל קטן, ואפשר לעצור לפיקניק בצל העצים.</p>
+    </details>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  זו אותה כרטיסייה מדוגמה 7, עם כפתור "קרא עוד" שפותח וסוגר טקסט נוסף.
+  בלי JavaScript: ב-HTML כבר קיימת תגית מיוחדת בשביל זה.
+
+  details = קופסה מתקפלת. יש בה שני חלקים:
+    summary = הכותרת שתמיד נראית. לחיצה עליה פותחת וסוגרת את הקופסה.
+    p       = הטקסט שמוסתר עד שלוחצים.
+
+  הדפדפן עושה הכול לבד: הוא מסתיר את הטקסט, ופותח אותו בלחיצה.
+  אין צורך בקוד נוסף, וגם לא ב-id.
+
+  ב-CSS מעצבים רק את ה-summary, כדי שייראה כמו כפתור.
+  display: inline-block גורם לו להיות בגודל התוכן שלו,
+  ומסיר את החץ הקטן שהדפדפן מוסיף כברירת מחדל.
+
+  ===== נסו בעצמכם =====
+  1. הוסיפו את המילה open בתוך תגית details וראו שהכרטיסייה נפתחת מההתחלה.
+  2. שנו את background-color של ה-summary לירוק.
+  3. שנו את הכיתוב "קרא עוד" ל"לפרטים נוספים".
+  4. כבו את display: inline-block וראו שהכפתור נמתח לכל הרוחב והחץ חוזר.
+--\>`,
+        css: `/* עיצוב הכרטיסייה הבסיסי */
+.card {                                 /* הכרטיסייה */
+  width: 300px;                         /* רוחב קבוע */
+  border: 1px solid #ccc;               /* מסגרת דקה באפור */
+  border-radius: 8px;                   /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך התמונה לפי הפינות המעוגלות */
+  direction: rtl;                       /* כיוון הטקסט מימין לשמאל */
+}
+
+.card img {                             /* התמונה בתוך הכרטיסייה */
+  width: 100%;                          /* ממלאת את כל רוחב הכרטיסייה */
+  display: block;                       /* מסיר רווח קטן שנשאר מתחת לתמונה */
+}
+
+.card-body {                            /* אזור הטקסט */
+  padding: 15px;                        /* מרווח פנימי */
+}
+
+/* עיצוב ה-summary בלבד - נראה כמו כפתור פשוט */
+summary {                               /* הכותרת של ה-details */
+  background-color: #007bff;            /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 12px;                    /* מרווח פנימי */
+  border-radius: 4px;                   /* עיגול פינות */
+  cursor: pointer;                      /* סמן העכבר הופך ליד */
+  display: inline-block;                /* גורם לזה להיראות כמו כפתור בגודל התוכן */
+}
+
+/* רווח קטן לטקסט שנפתח */
+details p {                             /* פסקה שבתוך details */
+  margin-top: 10px;                     /* מרווח מעל הטקסט, מתחת לכפתור */
+}`
+      },
+
+      singleCardLink: {
+        html: `<div class="card">
+  <img src="Images/nature.jpg" alt="טבע">
+  <div class="card-body">
+    <h3>נופי הטבע</h3>
+    <p>סיור מרהיב בין מרחבים ירוקים ועצים פורחים.</p>
+
+    <a href="nature.html">לעמוד המלא</a>
+  </div>
+</div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  אותה כרטיסייה מדוגמה 8, אבל במקום "קרא עוד" יש קישור לעמוד אחר.
+
+  a = קישור.
+  href = הכתובת שאליה עוברים.
+  href="nature.html" = קובץ בשם nature.html שנמצא באותה תיקייה.
+
+  ב-CSS הקישור מעוצב באותו עיצוב כמו הכפתור בדוגמה 8,
+  רק שנוסף text-decoration: none, שמסיר את הקו התחתון של הקישור.
+
+  שימו לב: לחיצה על הקישור בתצוגה החיה פותחת את nature.html בלשונית חדשה.
+  זה עובד כשהקובץ nature.html נמצא באותה תיקייה שבה נמצא קובץ המעבדה.
+
+  ===== הקשר ל-Razor Pages =====
+
+  ב-Razor Pages כל עמוד הוא קובץ בתיקיית Pages:
+     Pages/Index.cshtml   = עמוד הכרטיסייה (הקוד שלמעלה)
+     Pages/Nature.cshtml  = העמוד שאליו עוברים
+
+  במקום לכתוב href, כותבים את שם העמוד בתכונה asp-page:
+
+     <a asp-page="/Nature">לעמוד המלא</a>
+
+  השרת מחשב את הכתובת, ולדפדפן מגיע קישור רגיל: href="/Nature".
+  הערך הוא שם העמוד בתוך Pages, בלי הסיומת cshtml.
+
+  כדי להעביר לעמוד הבא נתון (למשל מספר כרטיסייה) מוסיפים asp-route-id:
+
+     <a asp-page="/Nature" asp-route-id="5">לעמוד המלא</a>
+
+  הכתובת שנוצרת: /Nature?id=5
+
+  ===== נסו בעצמכם =====
+  1. שנו את הכיתוב של הקישור ל"לכתבה המלאה".
+  2. שנו את ה-href ל-https://he.wikipedia.org והוסיפו target="_blank"
+     (הקישור ייפתח בלשונית חדשה).
+  3. כבו את text-decoration: none וראו שחוזר הקו התחתון.
+--\>`,
+        css: `/* עיצוב הכרטיסייה הבסיסי */
+.card {                                 /* הכרטיסייה */
+  width: 300px;                         /* רוחב קבוע */
+  border: 1px solid #ccc;               /* מסגרת דקה באפור */
+  border-radius: 8px;                   /* עיגול פינות */
+  overflow: hidden;                     /* חיתוך התמונה לפי הפינות המעוגלות */
+  direction: rtl;                       /* כיוון הטקסט מימין לשמאל */
+}
+
+.card img {                             /* התמונה בתוך הכרטיסייה */
+  width: 100%;                          /* ממלאת את כל רוחב הכרטיסייה */
+  display: block;                       /* מסיר רווח קטן שנשאר מתחת לתמונה */
+}
+
+.card-body {                            /* אזור הטקסט */
+  padding: 15px;                        /* מרווח פנימי */
+}
+
+/* עיצוב הקישור - נראה כמו כפתור פשוט */
+a {                                     /* כל הקישורים בדף */
+  background-color: #007bff;            /* רקע כחול */
+  color: white;                         /* טקסט לבן */
+  padding: 8px 12px;                    /* מרווח פנימי */
+  border-radius: 4px;                   /* עיגול פינות */
+  text-decoration: none;                /* הסרת הקו התחתון של הקישור */
+  display: inline-block;                /* גורם לזה להיראות כמו כפתור בגודל התוכן */
+}`
+      },
+
       singleCardToggle: {
         html: `<div class="card">
   <img src="Images/nature.jpg" alt="טבע">
@@ -660,8 +813,9 @@ input:focus {                               /* שדה הקלט כשלחצו על
 <\!--
   ===== הסבר על הקוד =====
 
-  זו אותה כרטיסייה מהדוגמה הקודמת, עם תוספת אחת:
+  זו אותה כרטיסייה מדוגמה 7, עם תוספת אחת:
   הכפתור מציג טקסט נוסף, ולחיצה חוזרת מסתירה אותו. בלי JavaScript.
+  (דוגמה 8 משיגה את אותו אפקט בדרך אחרת, עם התגית details.)
 
   מה נוסף ב-HTML:
   input type="checkbox" = תיבת סימון נסתרת. היא "זוכרת" אם הכרטיסייה פתוחה.
@@ -2299,7 +2453,7 @@ tbody tr:hover {                            /* שורה שהעכבר מעליה 
 
     // בתצוגה החיה (srcdoc) קישור כמו href="#lion" היה טוען מחדש את כל המעבדה בתוך התצוגה.
     // הסקריפט הזה מבצע קפיצה בתוך אותו דף (חשוב גם ל-:target). הוא מתווסף רק לתצוגה, לא לקובץ שמורידים.
-    const PREVIEW_ANCHOR_FIX = '<scr' + 'ipt>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^=\'#\']");if(!a)return;e.preventDefault();var id=a.getAttribute("href").slice(1);location.hash=id;if(id){var t=document.getElementById(id);if(t&&t.scrollIntoView)t.scrollIntoView();}else{window.scrollTo(0,0);}});</scr' + 'ipt>';
+    const PREVIEW_ANCHOR_FIX = '<scr' + 'ipt>var LAB_URL=' + JSON.stringify(location.href) + ';document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a)return;var h=a.getAttribute("href");if(h.charAt(0)!=="#"){if(/^(https?:|mailto:|tel:)/.test(h))return;e.preventDefault();window.open(new URL(h,LAB_URL).href,"_blank");return;}e.preventDefault();var id=h.slice(1);location.hash=id;if(id){var t=document.getElementById(id);if(t&&t.scrollIntoView)t.scrollIntoView();}else{window.scrollTo(0,0);}});</scr' + 'ipt>';
     function buildPage(h, c, forPreview) {
       return `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><style>${c}</style></head><body>${h}${forPreview ? PREVIEW_ANCHOR_FIX : ''}</body></html>`;
     }
