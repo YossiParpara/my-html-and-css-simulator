@@ -108,14 +108,16 @@
         </optgroup>
         <optgroup label="🌀 אנימציות וגרדיאנטים">
           <option value="page3">15. Infinite Animations (הקפצה והבהוב)</option>
-          <option value="page4">16. Animated Gradient Background</option>
-          <option value="page6">17. Parallax Hero Section</option>
+          <option value="bouncingBall">16. ⚽ כדור מקפץ (Bounce Ball)</option>
+          <option value="spinner">17. ⏳ Loading Spinner (טבעת טעינה)</option>
+          <option value="page4">18. Animated Gradient Background</option>
+          <option value="page6">19. Parallax Hero Section</option>
         </optgroup>
         <optgroup label="🧩 טפסים, מבנה ו-Bootstrap (הכנה ל-Razor Pages)">
-          <option value="formFields">18. 📝 שדות טופס (input, select, radio...)</option>
-          <option value="layoutPage">19. 🏗️ מבנה דף כמו ב-Layout</option>
-          <option value="dataTable">20. 📊 טבלת נתונים מעוצבת</option>
-          <option value="bootstrapCards">21. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
+          <option value="formFields">20. 📝 שדות טופס (input, select, radio...)</option>
+          <option value="layoutPage">21. 🏗️ מבנה דף כמו ב-Layout</option>
+          <option value="dataTable">22. 📊 טבלת נתונים מעוצבת</option>
+          <option value="bootstrapCards">23. 🅱️ Bootstrap: כרטיסיות ו-Grid</option>
         </optgroup>
       </select>
     </div>
@@ -394,7 +396,7 @@ body {                                  /* בוחר את כל גוף הדף */
       },
 
       flexbox: {
-        html: `<div class="container">
+        html: `<div class="flex-container">
   <div class="item">1</div>
   <div class="item">2</div>
   <div class="item">3</div>
@@ -406,7 +408,7 @@ body {                                  /* בוחר את כל גוף הדף */
 <\!--
   ===== הסבר על הקוד =====
 
-  div class="container" = המכולה (ה"אבא").
+  div class="flex-container" = המכולה (ה"אבא").
   div class="item" = התיבות שבתוכה (ה"ילדים").
 
   Flexbox מגדירים על האבא: display: flex מסדר את הילדים בשורה.
@@ -433,7 +435,7 @@ body {                                  /* בוחר את כל גוף הדף */
   padding: 20px;                        /* מרווח פנימי מהקצוות */
 }
 
-.container {                            /* המכולה של התיבות */
+.flex-container {                       /* המכולה של התיבות */
   display: flex;                        /* הפיכת המכולה ל-Flexbox */
   flex-direction: row;                  /* כיוון הציר הראשי: row | column | row-reverse | column-reverse */
   flex-wrap: wrap;                      /* כשאין מקום, תיבות יורדות לשורה הבאה: nowrap | wrap | wrap-reverse */
@@ -887,7 +889,7 @@ a {                                     /* כל הקישורים בדף */
       },
 
       threeCards: {
-        html: `<div class="container">
+        html: `<div class="gallery-container">
   <h2 class="main-title">גלריית כרטיסיות מודרנית</h2>
   <div class="cards-grid">
 
@@ -974,7 +976,7 @@ body {                                  /* בוחר את כל גוף הדף */
   padding: 30px 20px;                   /* מרווח פנימי: 30 למעלה/למטה, 20 לצדדים */
 }
 
-.container {                            /* המכולה הכללית של הגלריה */
+.gallery-container {                    /* המכולה הכללית של הגלריה */
   max-width: 1000px;                    /* הגבלת רוחב כדי שהגלריה לא תימתח */
   margin: 0 auto;                       /* מרכוז המכולה בדף */
 }
@@ -1632,6 +1634,121 @@ body {                                  /* בוחר את כל גוף הדף */
   100% {                                /* סוף האנימציה */
     transform: scale(0.85);             /* חוזרת לגודל המוקטן */
   }
+}`
+      },
+
+      bouncingBall: {
+        html: `<div class="ball"></div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  div class="ball" = קופסה ריקה אחת. ה-CSS הופך אותה לעיגול אדום ומזיז אותה.
+
+  האנימציה בנויה משני חלקים:
+  1. @keyframes bounce = מגדיר את שלבי התנועה:
+     איפה הכדור נמצא בכל אחוז מהזמן של מחזור אחד.
+  2. animation: bounce 1.2s infinite = מחבר את האנימציה לכדור:
+     שם האנימציה, משך מחזור אחד, וחזרה אינסופית.
+
+  שלבי התנועה:
+  0% ו-100% = הכדור בנקודת ההתחלה (translateY(0)).
+  50%       = הכדור בנקודה הגבוהה: translateY(-120px).
+              מינוס = כלפי מעלה.
+
+  animation-timing-function בתוך שלב = קצב התנועה מהשלב הזה עד השלב הבא:
+  ease-in  = מתחיל לאט ומאיץ.
+  ease-out = מתחיל מהר ומאט.
+  שימו לב: הקצב שכתוב ב-0% חל על העלייה (מ-0% עד 50%),
+  והקצב שכתוב ב-50% חל על הירידה (מ-50% עד 100%).
+
+  ===== נסו בעצמכם =====
+  1. החליפו בין ease-in ל-ease-out וראו איזו גרסה נראית כמו כדור אמיתי
+     (כדור אמיתי מאט בעלייה ומאיץ בנפילה).
+  2. שנו את -120px ל--200px.
+  3. שנו את 1.2s ל-0.6s.
+  4. שנו את border-radius מ-50% ל-10px.
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
+  display: flex;                        /* הפעלת Flexbox */
+  justify-content: center;              /* מרכוז אופקי של הכדור */
+  align-items: flex-end;                /* הכדור יושב בתחתית האזור */
+  height: 80vh;                         /* גובה של 80% מגובה החלון */
+  background: #0f172a;                  /* רקע כחול כהה מאוד */
+}
+
+@keyframes bounce {                     /* שלבי אנימציית ההקפצה */
+  0%, 100% {                            /* בתחילת האנימציה ובסופה */
+    transform: translateY(0);           /* הכדור במקומו */
+    animation-timing-function: ease-in; /* קצב העלייה: מתחיל לאט ומאיץ */
+  }
+  50% {                                 /* באמצע האנימציה */
+    transform: translateY(-120px);      /* הכדור למעלה ב-120 פיקסלים */
+    animation-timing-function: ease-out;/* קצב הירידה: מתחיל מהר ומאט */
+  }
+}
+
+.ball {                                 /* הכדור */
+  width: 50px;                          /* רוחב הכדור */
+  height: 50px;                         /* גובה הכדור */
+  margin-bottom: 20px;                  /* מרווח מהתחתית */
+  background-color: #e74c3c;            /* צבע אדום */
+  border-radius: 50%;                   /* הופך את הריבוע לעיגול */
+  animation: bounce 1.2s infinite;      /* חיבור האנימציה: שם, משך, חזרה אינסופית */
+}`
+      },
+
+      spinner: {
+        html: `<div class="spinner"></div>
+
+<\!--
+  ===== הסבר על הקוד =====
+
+  div class="spinner" = קופסה ריקה אחת. ה-CSS הופך אותה לטבעת מסתובבת,
+  כמו שרואים באתרים בזמן טעינה.
+
+  איך נוצרת הטבעת:
+  1. border-radius: 50% הופך את הריבוע לעיגול.
+  2. border: 6px solid #f3f3f3 = מסגרת אפורה סביב כל העיגול.
+  3. border-top: 6px solid #9b59b6 = צובע רק את הצד העליון של המסגרת בסגול.
+     התוצאה: קשת סגולה על טבעת אפורה.
+
+  איך היא מסתובבת:
+  @keyframes spin = מסובב מ-0 מעלות ל-360 מעלות (סיבוב שלם).
+  animation: spin 1s linear infinite = סיבוב אחד בשנייה, בלי הפסקה.
+  linear = מהירות קבועה. בלי זה (ברירת המחדל ease) הסיבוב היה מאיץ ומאט
+  בכל מחזור, וזה לא נראה כמו טעינה.
+
+  ===== נסו בעצמכם =====
+  1. שנו את צבע ה-border-top לכחול או לירוק.
+  2. שנו את 1s ל-3s ול-0.3s.
+  3. שנו את linear ל-ease וראו את ההבדל.
+  4. שנו את 360deg ל--360deg (סיבוב לכיוון ההפוך).
+--\>`,
+        css: `body {                                  /* בוחר את כל גוף הדף */
+  display: flex;                        /* הפעלת Flexbox */
+  justify-content: center;              /* מרכוז אופקי */
+  align-items: center;                  /* מרכוז אנכי */
+  height: 80vh;                         /* גובה של 80% מגובה החלון */
+  background: #0f172a;                  /* רקע כחול כהה מאוד */
+}
+
+@keyframes spin {                       /* שלבי אנימציית הסיבוב */
+  0% {                                  /* תחילת האנימציה */
+    transform: rotate(0deg);            /* בלי סיבוב */
+  }
+  100% {                                /* סוף האנימציה */
+    transform: rotate(360deg);          /* סיבוב שלם */
+  }
+}
+
+.spinner {                              /* הטבעת המסתובבת */
+  width: 60px;                          /* רוחב */
+  height: 60px;                         /* גובה */
+  border: 6px solid #f3f3f3;            /* מסגרת אפורה סביב כל העיגול */
+  border-top: 6px solid #9b59b6;        /* הצד העליון בלבד בצבע המסתובב */
+  border-radius: 50%;                   /* הופך את הריבוע לעיגול */
+  animation: spin 1s linear infinite;   /* חיבור האנימציה: סיבוב בשנייה, במהירות קבועה, לנצח */
 }`
       },
 
